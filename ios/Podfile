@@ -14,8 +14,19 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
+project 'nutsales', {
+  'DebugProd' => :debug,
+  'DebugStaging' => :debug,
+  'ReleaseStaging' => :release,
+  'ReleaseProd' => :release,
+}
+
 target 'nutsales' do
   config = use_native_modules!
+  pod 'react-native-config/Extension', :path => '../node_modules/react-native-config'
+  pod 'FirebaseCoreInternal', :modular_headers => true
+  pod 'FirebaseCore', :modular_headers => true
+  pod 'GoogleUtilities', :modular_headers => true
 
   use_react_native!(
     :path => config[:reactNativePath],

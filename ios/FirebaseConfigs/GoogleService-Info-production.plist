@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1037912367648-57ff7ji4mp1nlil95283rel1f4el15jv.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1037912367648-57ff7ji4mp1nlil95283rel1f4el15jv</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>1037912367648-30p9m2rniil9mj8t3nv0bj9t8qh9htjc.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyC3I0YKj7dlV4_1XFYuNJvByT8o8la4rKY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1037912367648</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.nutsales.app</string>
+	<key>PROJECT_ID</key>
+	<string>nutsales-e3297</string>
+	<key>STORAGE_BUCKET</key>
+	<string>nutsales-e3297.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1037912367648:ios:a2049bcb912b5061651245</string>
+</dict>
+</plist>
