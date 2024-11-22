@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-element-dropdown/src/components/Dropdown/index.tsx b/node_modules/react-native-element-dropdown/src/components/Dropdown/index.tsx
+index c6125da..80b53f9 100644
+--- a/node_modules/react-native-element-dropdown/src/components/Dropdown/index.tsx
++++ b/node_modules/react-native-element-dropdown/src/components/Dropdown/index.tsx
+@@ -260,7 +260,7 @@ const DropdownComponent: <T>(
+             ) {
+               refList?.current?.scrollToIndex({
+                 index: index,
+-                animated: false,
++                animated: true,
+               });
+             }
+           }

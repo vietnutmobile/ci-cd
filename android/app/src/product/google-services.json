@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "1037912367648",
+    "project_id": "nutsales-e3297",
+    "storage_bucket": "nutsales-e3297.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1037912367648:android:9d0bdfeb68a7fc25651245",
+        "android_client_info": {
+          "package_name": "com.nutsales.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1037912367648-30p9m2rniil9mj8t3nv0bj9t8qh9htjc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nutsales.app",
+            "certificate_hash": "14584081e6ca665489e1b97e724618ea17a90ce5"
+          }
+        },
+        {
+          "client_id": "1037912367648-4m78onc49h296butecckpg369fmjrrc9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALR92mnYUuHj3_l4wjNpF9iEwF9pXQWwM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1037912367648-4m78onc49h296butecckpg369fmjrrc9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1037912367648-57ff7ji4mp1nlil95283rel1f4el15jv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.nutsales.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
