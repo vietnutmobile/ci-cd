@@ -502,7 +502,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\nGOOGLESERVICE_INFO_DEV=${PROJECT_DIR}/FirebaseConfigs/GoogleService-Info-staging.plist\nGOOGLESERVICE_INFO_PROD=${PROJECT_DIR}/FirebaseConfigs/GoogleService-Info-production.plist\nif [ \"${CONFIGURATION}\" == \"ReleaseProd\"] \nthen\n    echo \"Using ${GOOGLESERVICE_INFO_PROD}\"\n    cp \"${SRCROOT}/FirebaseConfigs/GoogleService-Info-production.plist\" \\\n     \"${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/GoogleService-Info.plist\"\nelse\n    echo \"Using ${GOOGLESERVICE_INFO_DEV}\"\n        cp \"${SRCROOT}/FirebaseConfigs/GoogleService-Info-staging.plist\" \\\n     \"${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/GoogleService-Info.plist\"\nfi\n\n";
+			shellScript = "\nGOOGLESERVICE_INFO_DEV=${PROJECT_DIR}/FirebaseConfigs/GoogleService-Info-staging.plist\nGOOGLESERVICE_INFO_PROD=${PROJECT_DIR}/FirebaseConfigs/GoogleService-Info-production.plist\nif [ \"${CONFIGURATION}\" == \"ReleaseProd\" ] || [ \"${CONFIGURATION}\" == \"DebugProd\" ]\nthen\n    echo \"Using ${GOOGLESERVICE_INFO_PROD}\"\n    cp \"${SRCROOT}/FirebaseConfigs/GoogleService-Info-production.plist\" \\\n     \"${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/GoogleService-Info.plist\"\nelse\n    echo \"Using ${GOOGLESERVICE_INFO_DEV}\"\n        cp \"${SRCROOT}/FirebaseConfigs/GoogleService-Info-staging.plist\" \\\n     \"${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/GoogleService-Info.plist\"\nfi\n\n";
 		};
 		9438B1ADB5D3BC16EE411390 /* [CP-User] [RNFB] Core Configuration */ = {
 			isa = PBXShellScriptBuildPhase;
