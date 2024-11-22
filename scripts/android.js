@@ -1,34 +1,78 @@
 const readline = require('readline');
-const { spawn } = require('child_process');
+const {spawn} = require('child_process');
 
-const commands = {
-  1: 'npx react-native run-android --mode=stagingDebug --appId com.nutsales.light',
-  2: 'npx react-native run-android --mode=productDebug --appId com.nutsales.app',
-  3: 'npx react-native run-android --mode=stagingRelease --appId com.nutsales.light',
-  4: 'npx react-native run-android --mode=productRelease --appId com.nutsales.app',
-  5: 'cd android && ./gradlew assembleStagingRelease',
-  6: 'cd android && ./gradlew assembleProductRelease',
-  7: 'cd android && ./gradlew bundleStagingRelease',
-  8: 'cd android && ./gradlew bundleProductRelease',
+const COMMANDS = {
+  STAGING_DEBUG: {
+    id: 1,
+    title: 'Run android staging debug',
+    command:
+      'cp .env.staging .env && npx react-native run-android --mode=stagingDebug --appId com.nutsales.light',
+  },
+  PRODUCT_DEBUG: {
+    id: 2,
+    title: 'Run android product debug',
+    command:
+      'cp .env.production .env && npx react-native run-android --mode=productDebug --appId com.nutsales.app',
+  },
+  STAGING_RELEASE: {
+    id: 3,
+    title: 'Run android staging release',
+    command:
+      'cp .env.staging .env && npx react-native run-android --mode=stagingRelease --appId com.nutsales.light',
+  },
+  PRODUCT_RELEASE: {
+    id: 4,
+    title: 'Run android product release',
+    command:
+      'cp .env.production .env && cd android && ./gradlew assembleProductRelease',
+  },
+  BUILD_STAGING_APK: {
+    id: 5,
+    title: 'Build android staging APK',
+    command:
+      'cp .env.staging .env && cd android && ./gradlew assembleStagingRelease',
+  },
+  BUILD_PRODUCT_APK: {
+    id: 6,
+    title: 'Build android product APK',
+    command:
+      'cp .env.production .env && cd android && ./gradlew assembleProductRelease',
+  },
+  BUILD_STAGING_BUNDLE: {
+    id: 7,
+    title: 'Build android staging bundle',
+    command:
+      'cp .env.staging .env && cd android && ./gradlew bundleStagingRelease',
+  },
+  BUILD_PRODUCT_BUNDLE: {
+    id: 8,
+    title: 'Build android product bundle',
+    command:
+      'cp .env.production .env && cd android && ./gradlew bundleProductRelease',
+  },
+  CLEAN: {
+    id: 9,
+    title: 'Clean android project',
+    command:
+      'cd android && ORG_GRADLE_PROJECT_newArchEnabled=false ./gradlew clean&&cd ..',
+  },
 };
 
+const commands = Object.fromEntries(
+  Object.values(COMMANDS).map(({id, command}) => [id, command]),
+);
+
+const choices = Object.values(COMMANDS).map(({title}) => title);
+
 let currentChoice = 1;
-const choices = [
-  'Run android staging debug',
-  'Run android product debug',
-  'Run android staging release',
-  'Run android product release',
-  'Build android staging APK',
-  'Build android product APK',
-  'Build android staging bundle',
-  'Build android product bundle',
-];
 
 function displayMenu() {
   console.clear();
   console.log('Choose a command to execute:');
   choices.forEach((choice, index) => {
-    console.log(`${currentChoice === index + 1 ? '>' : ' '} ${index + 1}. ${choice}`);
+    console.log(
+      `${currentChoice === index + 1 ? '>' : ' '} ${index + 1}. ${choice}`,
+    );
   });
 }
 
@@ -60,30 +104,31 @@ function executeCommand(answer) {
   const command = commands[answer];
 
   if (!command) {
-    console.log('Invalid choice!');
+    console.error('Invalid choice!');
     rl.close();
     return;
   }
 
-  console.log(`Executing: ${command}`);
+  console.log('\nExecuting command...');
+  console.log('='.repeat(50));
+  console.log(command);
+  console.log('='.repeat(50), '\n');
 
-  const [cmd, ...args] = command.split(' ');
-  const process = spawn(cmd, args, { shell: true });
-
-  process.stdout.on('data', (data) => {
-    console.log(data.toString());
+  const process = spawn(command, [], {
+    shell: true,
+    stdio: 'inherit',
   });
 
-  process.stderr.on('data', (data) => {
-    console.error(data.toString());
+  process.on('error', error => {
+    console.error('\nError occurred:', error.message);
+    rl.close();
   });
 
-  process.on('error', (error) => {
-    console.error(`Error: ${error.message}`);
-  });
-
-  process.on('close', (code) => {
-    console.log(`Process ended with code: ${code}`);
+  process.on('close', code => {
+    console.log('\nProcess completed with exit code:', code);
+    if (code !== 0) {
+      console.error('Command failed to execute successfully');
+    }
     rl.close();
   });
 }
