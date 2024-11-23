@@ -1,11 +1,11 @@
-import { webApiClient } from '@/helpers';
+import {webApiClient} from '@/helpers';
 import {
   AUTH_PROVIDER_APPLE,
   AUTH_PROVIDER_AZURE,
   AUTH_PROVIDER_GOOGLE,
 } from '@/helpers/constants';
-import { rootApi } from '@/store/services';
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {rootApi} from '@/store/services';
+import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 
 const initialState = {
   token: '',
@@ -15,7 +15,7 @@ const initialState = {
 
 export const fetchAppToken = createAsyncThunk(
   'auth/fetchAppToken',
-  async ({ provider, ...tokens }, { rejectWithValue, dispatch }) => {
+  async ({provider, ...tokens}, {rejectWithValue, dispatch}) => {
     await dispatch(rootApi.util.resetApiState());
 
     if (!provider) {
@@ -28,13 +28,22 @@ export const fetchAppToken = createAsyncThunk(
 
     try {
       if (provider === AUTH_PROVIDER_GOOGLE) {
-        const response = await webApiClient.post('/api/auth/google/token/verify', tokens);
+        const response = await webApiClient.post(
+          '/api/auth/google/token/verify',
+          tokens,
+        );
         result = response?.data;
       } else if (provider === AUTH_PROVIDER_AZURE) {
-        const response = await webApiClient.post('/api/auth/azure/token/verify', tokens);
+        const response = await webApiClient.post(
+          '/api/auth/azure/token/verify',
+          tokens,
+        );
         result = response?.data;
       } else if (provider === AUTH_PROVIDER_APPLE) {
-        const response = await webApiClient.post('/api/auth/apple/token/verify', tokens);
+        const response = await webApiClient.post(
+          '/api/auth/apple/token/verify',
+          tokens,
+        );
         result = response?.data;
       }
       return result;
@@ -45,16 +54,19 @@ export const fetchAppToken = createAsyncThunk(
   },
 );
 
-export const logoutUser = createAsyncThunk('auth/logoutUser', async (_, { dispatch }) => {
-  await dispatch(rootApi.util.resetApiState());
-  return { ...initialState };
-});
+export const logoutUser = createAsyncThunk(
+  'auth/logoutUser',
+  async (_, {dispatch}) => {
+    await dispatch(rootApi.util.resetApiState());
+    return {...initialState};
+  },
+);
 
 const slice = createSlice({
   name: 'auth',
   initialState,
   reducers: {},
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder.addCase(fetchAppToken.fulfilled, (state, action) => {
       const payload = action.payload;
       state.token = payload?.token ?? '';
@@ -69,6 +81,6 @@ const slice = createSlice({
   },
 });
 
-export const { setToken, authenticateUser } = slice.actions;
+export const {setToken, authenticateUser} = slice.actions;
 
 export default slice.reducer;

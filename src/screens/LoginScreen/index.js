@@ -48,7 +48,7 @@ function LoginScreen({navigation}) {
     try {
       const result = await dispatch(
         fetchAppToken({
-          ...signInResult,
+          ...signInResult.data,
           provider: AUTH_PROVIDER_GOOGLE,
         }),
       );
