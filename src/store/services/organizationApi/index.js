@@ -88,4 +88,40 @@ export const organizationApiEndpoints = (builder) => ({
       url: `/api/organizations/${orgId}`,
     }),
   }),
+  getEmailhub: builder.query({
+    providesTags: ['OrganizationEmailhub'],
+    query: ({ userId, ...params }) => {
+      return {
+        url: `/api/email-hub/${userId}/threads`,
+        params,
+      };
+    },
+  }),
+  convertEmailhubToNut: builder.mutation({
+    providesTags: ['OrganizationEmailhub'],
+    invalidatesTags: ['OrganizationEmailhub'],
+    query: ({ userId, threadId, ...params }) => {
+      return {
+        method: 'POST',
+        url: `/api/email-hub/${userId}/threads/${threadId}/create-nut`,
+        body: params,
+      };
+    },
+  }),
+  reportNotSpam: builder.mutation({
+    providesTags: ['OrganizationEmailhub'],
+    invalidatesTags: ['OrganizationEmailhub'],
+    query: ({ userId, threadId }) => {
+      return {
+        method: 'POST',
+        url: `/api/email-hub/${userId}/threads/${threadId}/report-not-spam`,
+      };
+    },
+  }),
+  getEmailhubDetail: builder.query({
+    providesTags: ['OrganizationEmailhubDetail'],
+    query: ({ userId, threadId }) => ({
+      url: `/api/email-hub/${userId}/threads/${threadId}`,
+    }),
+  }),
 });

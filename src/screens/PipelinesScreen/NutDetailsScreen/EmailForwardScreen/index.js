@@ -81,7 +81,7 @@ function EmailForwardScreen() {
         toast.show({
           description: 'Send email successfully',
         });
-        await formik.resetForm();
+        formik.resetForm();
         setTimeout(() => {
           dispatch(cancelReplyEmail());
           navigation.back();

@@ -18,7 +18,7 @@ import defaultAvatar from '@/theme/assets/images/default-avatar.jpeg';
 import { Images } from '@/theme/ImageProvider';
 import { useRoute } from '@react-navigation/native';
 import { useFormik } from 'formik';
-import { Avatar, HStack, ScrollView, VStack } from 'native-base';
+import { Avatar, Box, Checkbox, HStack, ScrollView, VStack } from 'native-base';
 import { useCallback, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -81,6 +81,11 @@ function NutCreateScreen({ navigation }) {
   );
 
   const contacts = contactResponse?.data ?? [];
+  useEffect(() => {
+    if (stages?.length > 0) {
+      formik.setFieldValue('stageId', stages[0]?.id);
+    }
+  }, [stages]);
 
   const debounceUpdateContactKeywords = useCallback(
     debounce(async (keywords) => {
@@ -109,9 +114,9 @@ function NutCreateScreen({ navigation }) {
   const formik = useFormik({
     validationSchema: createNutValidationSchema(),
     initialValues: {
-      contactId: '',
+      // contactId: '',
       name: '',
-      leadSource: '',
+      // leadSource: '',
       pipelineId: '',
       stageId: '',
       assignedUserId: '',
@@ -143,6 +148,12 @@ function NutCreateScreen({ navigation }) {
       setSelectedContact(contacts.find((contact) => contact?.id === formik?.values?.contactId));
     }
   }, [formik?.values?.contactId]);
+
+  useEffect(() => {
+    if (userData) {
+      formik.setFieldValue('assignedUserId', userData?.id);
+    }
+  }, [userData]);
 
   return (
     <SafeScreen style={[backgrounds.gray100]}>
@@ -177,7 +188,7 @@ function NutCreateScreen({ navigation }) {
                 />
               </View>
 
-              <View style={[layout.flex_1]}>
+              {/* <View style={[layout.flex_1]}>
                 <Input
                   required
                   label={'Lead Source'}
@@ -189,58 +200,54 @@ function NutCreateScreen({ navigation }) {
                   onBlur={formik.handleBlur('leadSource')}
                   error={formik.touched.leadSource && formik.errors.leadSource}
                 />
-              </View>
+              </View> */}
             </HStack>
-
-            <HStack space={3}>
-              <View style={[layout.flex_1]}>
-                <Select
-                  required
-                  dropdownIcon={
-                    <Icons.ChevronDownIcon
-                      style={[gutters.paddingH_12]}
-                      size={14}
-                      color={colors.gray700}
-                    />
-                  }
-                  items={assigneeOptions}
-                  placeholder="Select Assignee"
-                  label="Assignee"
-                  name="assignedUserId"
-                  selectedValue={formik.values.assignedUserId}
-                  error={formik.touched?.assignedUserId && formik.errors?.assignedUserId}
-                  onChange={(value) => {
-                    formik.setFieldValue('assignedUserId', value);
-                  }}
-                  onBlur={() => formik.handleBlur('assignedUserId')}
-                />
-              </View>
-
-              <View style={[layout.flex_1]}>
-                <Select
-                  required
-                  dropdownIcon={
-                    <Icons.ChevronDownIcon
-                      style={[gutters.paddingH_12]}
-                      size={14}
-                      color={colors.gray700}
-                    />
-                  }
-                  items={stageOptions}
-                  placeholder="Select Stage"
-                  label="Stages"
-                  name="stageId"
-                  selectedValue={formik.values.stageId}
-                  error={formik.touched?.stageId && formik.errors?.stageId}
-                  onChange={(value) => {
-                    formik.setFieldValue('stageId', value);
-                  }}
-                  onBlur={() => formik.handleBlur('stageId')}
-                />
-              </View>
-            </HStack>
-
             <View style={[layout.flex_1]}>
+              <Select
+                required
+                dropdownIcon={
+                  <Icons.ChevronDownIcon
+                    style={[gutters.paddingH_12]}
+                    size={14}
+                    color={colors.gray700}
+                  />
+                }
+                items={stageOptions}
+                placeholder="Select Stage"
+                label="Stages"
+                name="stageId"
+                selectedValue={formik.values.stageId}
+                error={formik.touched?.stageId && formik.errors?.stageId}
+                onChange={(value) => {
+                  formik.setFieldValue('stageId', value);
+                }}
+                onBlur={() => formik.handleBlur('stageId')}
+              />
+            </View>
+            <View style={[layout.flex_1]}>
+              <Select
+                required
+                dropdownIcon={
+                  <Icons.ChevronDownIcon
+                    style={[gutters.paddingH_12]}
+                    size={14}
+                    color={colors.gray700}
+                  />
+                }
+                items={assigneeOptions}
+                placeholder="Select Assignee"
+                label="Assignee"
+                name="assignedUserId"
+                selectedValue={formik.values.assignedUserId}
+                error={formik.touched?.assignedUserId && formik.errors?.assignedUserId}
+                onChange={(value) => {
+                  formik.setFieldValue('assignedUserId', value);
+                }}
+                onBlur={() => formik.handleBlur('assignedUserId')}
+              />
+            </View>
+
+            {/* <View style={[layout.flex_1]}>
               <Text
                 style={[
                   gutters.marginB_6,
@@ -264,11 +271,16 @@ function NutCreateScreen({ navigation }) {
                 onBlur={formik.handleBlur('notes')}
                 error={formik.touched.notes && formik.errors.notes}
               />
-            </View>
+            </View> */}
           </VStack>
+          {/* <Box my={2}>
+            <Checkbox colorScheme="green" value="one" mt={2}>
+              <Text style={[fonts.size_14, fonts.medium, fonts.gray700]}>Create another</Text>
+            </Checkbox>
+          </Box> */}
         </View>
 
-        <View
+        {/* <View
           style={[
             layout.flex_1,
             layout.justifyStart,
@@ -375,7 +387,7 @@ function NutCreateScreen({ navigation }) {
               </Button>
             </HStack>
           )}
-        </View>
+        </View> */}
 
         <HStack py={3} space={2} justifyContent="space-between" alignItems="center">
           <Button

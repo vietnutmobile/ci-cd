@@ -147,3 +147,10 @@ export const cleanHTML = (htmlString, { shouldConvertLineBreak = true } = {}) =>
 
   return result;
 };
+
+export const isEmailMediaHeavy = (emailHTML) => {
+  const isIncludingTableForLayout = emailHTML.includes('<table');
+  const containsMoreThanThreeMedia =
+    emailHTML.match(/<(img|video|audio|iframe|embed|object)/g)?.length > 1;
+  return isIncludingTableForLayout && containsMoreThanThreeMedia;
+};

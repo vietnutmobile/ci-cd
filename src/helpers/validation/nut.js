@@ -4,10 +4,10 @@ export const createNutValidationSchema = ({ requireOneOf = [] } = {}) => {
   return Yup.object({
     name: Yup.string().required('Name is required'),
     stageId: Yup.string().required('Stage is required'),
-    leadSource: Yup.string().required('Lead Source is required'),
+    // leadSource: Yup.string().required('Lead Source is required'),
     assignedUserId: Yup.string().required('Assigned User is required'),
-    notes: Yup.string().nullable(),
-    contactId: Yup.string().nullable(),
+    // notes: Yup.string().nullable(),
+    // contactId: Yup.string().nullable(),
   });
 };
 

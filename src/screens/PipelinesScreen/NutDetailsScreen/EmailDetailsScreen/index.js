@@ -1,11 +1,13 @@
 import { Button, Text } from '@/components/atoms';
 import SafeScreen from '@/components/modules/SafeScreen';
+import WebViewAuto from '@/components/modules/WebViewAuto';
 import NutDetailsScreenNavbar from '@/components/screens/NutDetailsScreen/Navbar';
 import {
   cleanHTML,
   createHtmlViewBaseStyleSheet,
   formatEmailDate,
   htmlToPlainText,
+  isEmailMediaHeavy,
   processEmailSender,
   sanitize,
 } from '@/helpers';
@@ -23,16 +25,8 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Animated, useWindowDimensions, View } from 'react-native';
 import * as Icons from 'react-native-heroicons/outline';
 import RenderHtml from 'react-native-render-html';
-import { WebView } from 'react-native-webview';
 import { useDispatch } from 'react-redux';
 import truncate from 'truncate-html';
-
-const isEmailMediaHeavy = (emailHTML) => {
-  const isIncludingTableForLayout = emailHTML.includes('<table');
-  const containsMoreThanThreeMedia =
-    emailHTML.match(/<(img|video|audio|iframe|embed|object)/g)?.length > 1;
-  return isIncludingTableForLayout && containsMoreThanThreeMedia;
-};
 
 function EmailDetailsScreen() {
   const route = useRoute();
@@ -43,7 +37,6 @@ function EmailDetailsScreen() {
 
   const [shouldShowDeliveryDetails, setShouldShowDeliveryDetails] = useState(false);
   const [shouldUseWebview, setShouldUseWebview] = useState(undefined);
-  const [htmlRenderHeight, setHtmlRenderHeight] = useState(0);
   const rotation = useState(new Animated.Value(0))[0];
 
   const { width } = useWindowDimensions();
@@ -144,34 +137,6 @@ function EmailDetailsScreen() {
       setShouldUseWebview(shouldUsingWebview);
     }
   }, [email?.messageBodyHtml]);
-
-  const handleMessage = (event) => {
-    setHtmlRenderHeight(Number(event.nativeEvent.data));
-  };
-
-  // Adjust the webview size and zoom setting so it always fits the full HTML content into mobile screen
-  // Also detect the content height and set the height of the View accordingly so user can scroll the content from mobile like native
-  const injectedJavaScript = `
-  (function() {
-      var meta = document.createElement('meta');
-      meta.setAttribute('name', 'viewport');
-      meta.setAttribute('content', 'width=640');
-      document.getElementsByTagName('head')[0].appendChild(meta);
-    })();
-    const style = document.createElement('style');
-    style.innerHTML = \`
-      body, html
-      {
-        width: 640px;
-        max-width: 640px;
-        margin: 0 auto;
-      }
-    \`;
-    document.head.appendChild(style);
-    setTimeout(function() {
-      const height = document.documentElement.scrollHeight || document.body.scrollHeight;
-      window.ReactNativeWebView.postMessage(height.toString());
-    }, 100);`;
 
   return (
     <SafeScreen style={[backgrounds.gray100]}>
@@ -295,15 +260,7 @@ function EmailDetailsScreen() {
         {messageBody && typeof shouldUseWebview !== 'undefined' && (
           <View style={[gutters.marginT_16]}>
             {shouldUseWebview ? (
-              <WebView
-                originWhitelist={['*']}
-                domStorageEnabled
-                javaScriptEnabled
-                injectedJavaScript={injectedJavaScript}
-                onMessage={handleMessage}
-                style={{ width: htmlRenderWidth, height: htmlRenderHeight }}
-                source={{ html: messageBody }}
-              />
+              <WebViewAuto html={email.messageBodyHtml} />
             ) : (
               <RenderHtml
                 contentWidth={htmlRenderWidth}

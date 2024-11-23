@@ -3,28 +3,26 @@
 import { DEFAULT_ERROR_MESSAGE } from '@/helpers/constants';
 import { findFirsErrorMessage } from '@/helpers/error-handlers';
 import useToast from '@/helpers/hooks/use-toast';
+import { convert_data } from '@/helpers/search';
 import {
   useCreateNutCommentMutation,
   useGetNutCommentsQuery,
   useGetOrganizationMembersQuery,
   useGetUserProfileQuery,
 } from '@/store/services';
-import { useFocusEffect, useRoute } from '@react-navigation/native';
-import { useFormik } from 'formik';
-import { Avatar, Box, Button, HStack, Text } from 'native-base';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import * as Icons from 'react-native-heroicons/outline';
-import * as Yup from 'yup';
 import { useTheme } from '@/theme';
+import { useRoute } from '@react-navigation/native';
+import { Box, Button, HStack } from 'native-base';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   NativeSyntheticEvent,
-  ScrollView,
   StyleSheet,
+  Text,
   TextInput,
   TextInputSelectionChangeEventData,
-  TouchableOpacity,
-  View,
 } from 'react-native';
+import * as Icons from 'react-native-heroicons/outline';
+import { MentionPartType, PartType, Suggestion } from '../mention/types';
 import {
   defaultMentionTextStyle,
   generateValueFromPartsAndChangedText,
@@ -33,9 +31,6 @@ import {
   isMentionPartType,
   parseValue,
 } from '../mention/util';
-import { MentionPartType, PartType, Suggestion } from '../mention/types';
-import { convert_data, smart_search } from '@/helpers/search';
-import { debounce } from '@/helpers';
 import SuggestUser from './SuggestUser';
 
 const partTypes: PartType[] = [

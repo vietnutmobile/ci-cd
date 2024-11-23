@@ -7,11 +7,12 @@ import {nativeBaseConfig} from '@/theme/_config';
 import {extendTheme, NativeBaseProvider} from 'native-base';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
-import BootSplash from 'react-native-bootsplash';
 import {useEffect} from 'react';
+import BootSplash from 'react-native-bootsplash';
 
 function App() {
   const theme = extendTheme(nativeBaseConfig);
+
   useEffect(() => {
     BootSplash.hide();
   }, []);

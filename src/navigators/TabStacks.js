@@ -1,5 +1,6 @@
 import { Text } from '@/components/atoms';
 import { AccountScreen, ContactsScreen, DashboardScreen, PipelinesScreen } from '@/screens';
+import EmailHubScreen from '@/screens/EmailHubScreen';
 import { useTheme } from '@/theme';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as Icons from 'react-native-heroicons/outline';
@@ -51,6 +52,14 @@ export const BottomTabStack = () => {
         options={{
           tabBarLabel: ({ color }) => renderTabLabel('Pipelines', color),
           tabBarIcon: ({ color }) => <Icons.Squares2X2Icon size={20} color={color} />,
+        }}
+      />
+      <BottomTab.Screen
+        name="EmailHubScreen"
+        component={EmailHubScreen}
+        options={{
+          tabBarLabel: ({ color }) => renderTabLabel('Email Hub', color),
+          tabBarIcon: ({ color }) => <Icons.FolderOpenIcon size={20} color={color} />,
         }}
       />
       <BottomTab.Screen

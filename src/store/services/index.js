@@ -21,6 +21,8 @@ export const rootApi = createApi({
     'NutByID',
     'Logs',
     'Organization',
+    'OrganizationEmailhub',
+    'OrganizationEmailhubDetail',
     'OrganizationMembers',
     'OrganizationPipelineStages',
     'OrganizationPipelinesAndStages',
@@ -95,6 +97,10 @@ export const {
   useGetOrganizationPipelinesAndStagesQuery,
   useLazyGetOrganizationPipelinesAndStagesQuery,
   useDeleteOrganizationMutation,
+  useGetEmailhubQuery,
+  useConvertEmailhubToNutMutation,
+  useReportNotSpamMutation,
+  useGetEmailhubDetailQuery,
 } = organizationApis;
 
 export const {

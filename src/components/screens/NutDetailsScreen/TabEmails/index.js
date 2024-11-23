@@ -11,7 +11,7 @@ import {
 } from '@/store/services';
 import { useTheme } from '@/theme';
 import { useFocusEffect, useRoute } from '@react-navigation/native';
-import { FlatList, HStack, VStack } from 'native-base';
+import { HStack, VStack } from 'native-base';
 import React, { useCallback, useState } from 'react';
 import { View } from 'react-native';
 import * as Icons from 'react-native-heroicons/outline';
@@ -56,7 +56,7 @@ function EmailItem({ index, nutId, data }) {
       }}
     >
       <HStack
-        mt={2}
+        mb={2}
         py={3}
         space={2.5}
         key={id}
@@ -176,33 +176,33 @@ function NutDetailsTabEmails() {
     [emails],
   );
 
-  const composeEmail = async () => {
-    const result = await checkValidContact(nut?.contact ?? {});
+  // const composeEmail = async () => {
+  //   const result = await checkValidContact(nut?.contact ?? {});
 
-    const { isValid, error } = result;
+  //   const { isValid, error } = result;
 
-    if (isValid) {
-      dispatch(
-        startEmailCompose({
-          nutId,
-          mode: MODE_COMPOSE_NEW,
-        }),
-      );
-      navigation.navigate('EmailComposeScreen');
-      return;
-    }
+  //   if (isValid) {
+  //     dispatch(
+  //       startEmailCompose({
+  //         nutId,
+  //         mode: MODE_COMPOSE_NEW,
+  //       }),
+  //     );
+  //     navigation.navigate('EmailComposeScreen');
+  //     return;
+  //   }
 
-    if (error === NO_CONTACT_ERROR && (await confirmContactAction())) {
-      navigation.navigate('NutDetailsScreen', {
-        initialTabId: 'contact',
-        nutId,
-      });
-    } else if (error === NO_CONTAT_EMAIL_ERROR && (await confirmContactAction())) {
-      navigation.navigate('ContactEditScreen', {
-        contact: nut?.contact,
-      });
-    }
-  };
+  //   if (error === NO_CONTACT_ERROR && (await confirmContactAction())) {
+  //     navigation.navigate('NutDetailsScreen', {
+  //       initialTabId: 'contact',
+  //       nutId,
+  //     });
+  //   } else if (error === NO_CONTAT_EMAIL_ERROR && (await confirmContactAction())) {
+  //     navigation.navigate('ContactEditScreen', {
+  //       contact: nut?.contact,
+  //     });
+  //   }
+  // };
 
   useFocusEffect(
     useCallback(() => {
@@ -212,18 +212,25 @@ function NutDetailsTabEmails() {
 
   return (
     <>
-      <View style={[gutters.marginBottom_18]}>
-        <Button
-          width="130"
-          style={[backgrounds.green600]}
-          onPress={composeEmail}
-          leftIcon={
-            <Icons.PencilIcon width={16} height={16} color={colors.green600} fill={colors.white} />
-          }
-        >
-          <Text style={[fonts.size_14, fonts.semi, fonts.white]}>Compose</Text>
-        </Button>
-      </View>
+      {/* {!emails?.length && (
+        <View style={[gutters.marginBottom_18]}>
+          <Button
+            width="130"
+            style={[backgrounds.green600]}
+            onPress={composeEmail}
+            leftIcon={
+              <Icons.PencilIcon
+                width={16}
+                height={16}
+                color={colors.green600}
+                fill={colors.white}
+              />
+            }
+          >
+            <Text style={[fonts.size_14, fonts.semi, fonts.white]}>Compose</Text>
+          </Button>
+        </View>
+      )} */}
       {(emails || []).map((email) => (
         <EmailItem key={email.id} index={0} nutId={nutId} data={email} />
       ))}

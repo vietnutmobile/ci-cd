@@ -12,16 +12,16 @@ import {
   faFileWord,
 } from '@fortawesome/free-solid-svg-icons';
 import Config from 'react-native-config';
-import { buildNumber, version } from '../../package.json';
+import {buildNumber, version} from '../../package.json';
 
 export const webAppOrigin = `${Config.WEBAPP_PROTOCOL}://${Config.WEBAPP_URL}`;
 
-export const getUserNameFromEmail = (emailAddress) => {
+export const getUserNameFromEmail = emailAddress => {
   return emailAddress.split('@').shift();
 };
 
-export const extractContactDisplayName = (contact) => {
-  const { firstName, lastName, fullName, email } = contact;
+export const extractContactDisplayName = contact => {
+  const {firstName, lastName, fullName, email} = contact;
 
   if (fullName?.length > 0) {
     return fullName;
@@ -53,7 +53,8 @@ export const mimeTypeToIcon = {
   'application/vnd.openxmlformats-officedocument.spreadsheetml': faFileExcel,
   'application/vnd.oasis.opendocument.spreadsheet': faFileExcel,
   'application/vnd.ms-powerpoint': faFilePowerpoint,
-  'application/vnd.openxmlformats-officedocument.presentationml': faFilePowerpoint,
+  'application/vnd.openxmlformats-officedocument.presentationml':
+    faFilePowerpoint,
   'application/vnd.oasis.opendocument.presentation': faFilePowerpoint,
   'text/plain': faFileText,
   'text/html': faFileCode,
@@ -67,11 +68,11 @@ export const mimeTypeToIcon = {
   default: faFileCode,
 };
 
-export const getFileIcon = (mimeType) => {
-  const iconKey = Object.keys(mimeTypeToIcon).find((key) => mimeType.startsWith(key));
+export const getFileIcon = mimeType => {
+  const iconKey = Object.keys(mimeTypeToIcon).find(key =>
+    mimeType.startsWith(key),
+  );
   return mimeTypeToIcon[iconKey] || null; // Fallback to null or a default icon
 };
 
 export const getWebAppOrigin = () => webAppOrigin;
-
-export const getAppVersionFromPackageJson = () => `${version} build ${buildNumber}`;

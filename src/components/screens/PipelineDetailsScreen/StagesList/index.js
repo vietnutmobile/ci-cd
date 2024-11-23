@@ -1,6 +1,7 @@
 import { Text } from '@/components/atoms';
 import Button from '@/components/atoms/ButtonVariant';
 import Spinner from '@/components/atoms/Spinner';
+import { capitalizeFirstLetter, debounce } from '@/helpers';
 import { colorPalette } from '@/helpers/constants';
 import { getUserNameFromEmail } from '@/helpers/content';
 import useNavigator from '@/helpers/hooks/use-navigation';
@@ -12,8 +13,8 @@ import {
 import { useTheme } from '@/theme';
 import { Images } from '@/theme/ImageProvider';
 import { useRoute } from '@react-navigation/native';
-import { Box, FlatList, HStack, VStack } from 'native-base';
-import { useEffect, useMemo, useState } from 'react';
+import { Avatar, Box, FlatList, HStack, Input, VStack } from 'native-base';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Animated, View } from 'react-native';
 import * as Icons from 'react-native-heroicons/outline';
 
@@ -23,11 +24,12 @@ function PipelinesList({ navigation }) {
 
   const { initialStageId } = route.params;
 
-  const { layout, gutters, fonts, colors, borders, backgrounds, effects, dimensions } = useTheme();
+  const { layout, gutters, fonts, colors, borders, backgrounds } = useTheme();
 
   const rotation = useState(new Animated.Value(0))[0];
   const [isLoading, setIsLoading] = useState(true);
   const [activeStageId, setActiveStageId] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState('');
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(20);
 
@@ -48,7 +50,7 @@ function PipelinesList({ navigation }) {
 
   const { data: nutsResponse, refetch: refetchNuts } = useGetNutsQuery(
     {
-      keywords: '',
+      keywords: searchKeyword,
       assignedUserId: '',
       stageId: activeStageId || '',
       page: parseInt(page, 10) || 1,
@@ -95,13 +97,20 @@ function PipelinesList({ navigation }) {
     setActiveStageId(initialStageId);
   }, [initialStageId]);
 
+  const debounceUpdateSearchKeyword = useCallback(
+    debounce(async (keywords) => {
+      setSearchKeyword(keywords);
+    }, 400),
+    [],
+  );
+
   return (
     <>
       {isLoading ? (
         <Spinner />
       ) : (
         <>
-          <Box flex={1}>
+          <Box>
             <FlatList
               loading={isLoading}
               ListEmptyComponent={
@@ -115,7 +124,7 @@ function PipelinesList({ navigation }) {
               refreshing={isLoading}
               data={activeStage ? [activeStage] : stages}
               renderItem={({ item: stage, index }) => {
-                const count = stage?._count?.nuts ?? 0;
+                const count = activeStageId ? nuts.length : stage?._count?.nuts ?? 0;
                 const id = stage?.id ?? '';
                 const name = stage?.name ?? '';
 
@@ -124,6 +133,7 @@ function PipelinesList({ navigation }) {
                     key={id}
                     type="native"
                     onPress={() => {
+                      setSearchKeyword('');
                       if (activeStageId === id) {
                         setActiveStageId(undefined);
                         Animated.timing(rotation, {
@@ -189,91 +199,151 @@ function PipelinesList({ navigation }) {
           </Box>
 
           {activeStageId && (
-            <FlatList
-              style={[gutters.paddingT_12]}
-              refreshing={isLoading}
-              onRefresh={() => {
-                setPerPage('10');
-                refetchNuts();
-              }}
-              ListEmptyComponent={
-                <View
-                  style={[
-                    layout.column,
-                    layout.itemsCenter,
-                    gutters.paddingH_12,
-                    gutters.paddingT_80,
-                  ]}
-                >
-                  <Images.IC_NUT
-                    style={[gutters.marginB_16]}
-                    width={60}
-                    height={60}
-                    color={colors.green600}
-                    fill={colors.green600}
-                  />
-                  <Text style={[fonts.size_14_150, fonts.center, fonts.gray800]}>
-                    There is no Nut in this Stage yet. Please click
-                  </Text>
-
-                  <Text style={[fonts.size_14_150, fonts.center, fonts.gray800]}>
-                    <Text style={[fonts.size_14_150, fonts.green600]}> Nut +</Text> button to create
-                    one.
-                  </Text>
-                </View>
-              }
-              data={nuts}
-              renderItem={({ item: nut }) => {
-                const { id, name, assignedUser, stage } = nut;
-                const assigneeName =
-                  assignedUser?.name || getUserNameFromEmail(assignedUser?.email ?? '');
-
-                return (
-                  <Button
-                    key={id}
-                    type="native"
-                    onPress={() => {
-                      navigator.navigate('NutDetailsScreen', {
-                        nutId: id,
-                      });
-                    }}
+            <Box flex={1}>
+              <Box mb={2} width="100%" h={10} mt={2}>
+                <Input
+                  flex={1}
+                  placeholder="Search nuts"
+                  onChangeText={(text) => {
+                    debounceUpdateSearchKeyword(text);
+                  }}
+                  fontSize="md"
+                  bg={colors.gray100}
+                  InputLeftElement={
+                    <Box ml={3}>
+                      <Icons.MagnifyingGlassIcon size={22} color={colors.gray400} />
+                    </Box>
+                  }
+                />
+              </Box>
+              <FlatList
+                refreshing={isLoading}
+                onRefresh={() => {
+                  setPerPage('10');
+                  refetchNuts();
+                }}
+                ListEmptyComponent={
+                  <View
+                    style={[
+                      layout.column,
+                      layout.itemsCenter,
+                      gutters.paddingH_12,
+                      gutters.paddingT_80,
+                    ]}
                   >
-                    <VStack
-                      style={[
-                        gutters.marginB_12,
-                        gutters.padding_12,
-                        borders.rounded_4,
-                        backgrounds.white,
-                      ]}
-                      alignItems="stretch"
-                      space={3}
+                    <Images.IC_NUT
+                      style={[gutters.marginB_16]}
+                      width={60}
+                      height={60}
+                      color={colors.green600}
+                      fill={colors.green600}
+                    />
+                    <Text style={[fonts.size_14_150, fonts.center, fonts.gray800]}>
+                      There is no Nut in this Stage yet. Please click
+                    </Text>
+
+                    <Text style={[fonts.size_14_150, fonts.center, fonts.gray800]}>
+                      <Text style={[fonts.size_14_150, fonts.green600]}> Nut +</Text> button to
+                      create one.
+                    </Text>
+                  </View>
+                }
+                data={nuts}
+                renderItem={({ item: nut }) => {
+                  const { id, name, assignedUser, stage } = nut;
+                  const assigneeName =
+                    assignedUser?.name || getUserNameFromEmail(assignedUser?.email ?? '');
+
+                  return (
+                    <Button
+                      key={id}
+                      type="native"
+                      onPress={() => {
+                        navigator.navigate('NutDetailsScreen', {
+                          nutId: id,
+                        });
+                      }}
                     >
-                      <Text
-                        style={[fonts.size_15, fonts.medium, fonts.gray800]}
-                        numberOfLines={1}
-                        ellipsizeMode="tail"
+                      <VStack
+                        style={[
+                          gutters.marginB_12,
+                          gutters.padding_12,
+                          borders.rounded_4,
+                          backgrounds.white,
+                        ]}
+                        alignItems="stretch"
+                        space={2}
                       >
-                        {name.trim()} >
-                      </Text>
-                      <HStack justifyContent="space-between">
-                        <Text style={[fonts.size_14_150, fonts.medium, fonts.green600]}>
-                          {assigneeName}
+                        <Text
+                          style={[fonts.size_15, fonts.medium, fonts.gray800, layout.flex_1]}
+                          numberOfLines={2}
+                          ellipsizeMode="tail"
+                        >
+                          {name.trim()}
                         </Text>
 
-                        {/*<Text style={[fonts.size_14_150, fonts.medium, fonts.right, fonts.gray500]}>*/}
-                        {/*  Stage: {stage?.name ?? ''}*/}
-                        {/*</Text>*/}
-                      </HStack>
-                    </VStack>
-                  </Button>
-                );
-              }}
-              keyExtractor={(item, index) => index?.id ?? index.toString()}
-              onEndReached={() => {
-                setPerPage(perPage + 10);
-              }}
-              onEndReachedThreshold={0.5}
-            />
+                        <HStack style={[layout.flex_1]}>
+                          <Text
+                            style={[fonts.size_14_150, fonts.medium, fonts.gray500, { width: 70 }]}
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                          >
+                            Contact:
+                          </Text>
+                          <Text
+                            style={[fonts.size_14_150, fonts.medium, layout.flex_1]}
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                          >
+                            {capitalizeFirstLetter(nut?.contact?.fullName) ?? ''}
+                            {`<${nut?.contact?.email}>`}
+                          </Text>
+                        </HStack>
+
+                        {/* <HStack>
+                          <Text
+                            style={[fonts.size_14_150, fonts.medium, fonts.gray500, { width: 70 }]}
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                          >
+                            Stage:
+                          </Text>
+                          <Text
+                            style={[fonts.size_14_150, fonts.medium]}
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                          >
+                            {capitalizeFirstLetter(stage?.name) ?? ''}
+                          </Text>
+                        </HStack> */}
+                        {assignedUser ? (
+                          <HStack justifyContent="space-between" alignItems="center">
+                            <Text
+                              style={[fonts.size_14_150, fonts.medium]}
+                              numberOfLines={1}
+                              ellipsizeMode="tail"
+                            >
+                              <Text style={[fonts.gray500]}>Assignee: </Text>{' '}
+                              {capitalizeFirstLetter(assigneeName) ?? ''}
+                            </Text>
+                            <Avatar
+                              size={6}
+                              source={{ uri: assignedUser?.image }}
+                              style={[gutters.marginL_8, { marginTop: 0 }]}
+                            />
+                          </HStack>
+                        ) : null}
+                      </VStack>
+                    </Button>
+                  );
+                }}
+                keyExtractor={(item, index) => item?.id ?? index.toString()}
+                onEndReached={() => {
+                  setPerPage(perPage + 10);
+                }}
+                onEndReachedThreshold={0.5}
+              />
+            </Box>
           )}
         </>
       )}

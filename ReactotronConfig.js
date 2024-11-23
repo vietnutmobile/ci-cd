@@ -8,6 +8,6 @@ Reactotron.configure({name: 'nutsales'})
   })
   .connect();
 
-console.log = Reactotron.log;
+// console.log = Reactotron.log;
 
 export default Reactotron;

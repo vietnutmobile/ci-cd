@@ -80,9 +80,7 @@ function executeCommand(answer) {
   }
 
   console.log('\nExecuting command...');
-  console.log('='.repeat(50));
   console.log(command);
-  console.log('='.repeat(50), '\n');
 
   const process = spawn(command, [], {
     shell: true,

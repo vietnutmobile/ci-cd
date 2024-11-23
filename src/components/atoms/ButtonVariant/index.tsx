@@ -1,9 +1,16 @@
 import { testSelector } from '@/helpers/test-utils';
-import { Button as NBButton, IconButton as BNIconButton } from 'native-base';
+import { Button as NBButton, IconButton as BNIconButton, IButtonProps } from 'native-base';
 import React, { useMemo } from 'react';
 import { TouchableOpacity } from 'react-native';
 
-const Button = ({ children, type, style, disabled, ...props }) => {
+type ButtonProps = IButtonProps & {
+  children: React.ReactNode;
+  type?: 'icon' | 'native' | 'default';
+  style?: any;
+  disabled?: boolean;
+};
+
+const Button = ({ children, type = 'default', style, disabled, ...props }: ButtonProps) => {
   const ButtonTag = useMemo(() => {
     if (type === 'icon') {
       return BNIconButton;
