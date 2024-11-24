@@ -6,6 +6,8 @@ workflows:
     cache:
       cache_paths:
         - ~/.gradle/caches
+        - $CM_BUILD_DIR/node_modules
+        - $HOME/.gradle/caches
     triggering:
       events:
         - push
