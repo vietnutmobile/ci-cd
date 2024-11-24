@@ -1,0 +1,30 @@
+workflows:
+  android-staging:
+    name: Build Android Apk Staging
+    max_build_duration: 40
+    instance_type: mac_mini_m2
+    environment:
+      groups:
+        - google_play
+      node: v18.20.3
+    scripts:
+      - name: Install yarn dependencies
+        script: |
+          yarn
+      - name: Set Android SDK location
+        script: |
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/android/local.properties"
+      - name: Build apk staging
+        script: |
+          cp .env.staging .env 
+          cd android
+          ./gradlew assembleStagingRelease
+    artifacts:
+      - android/app/build/outputs/apk/staging/release/app-staging-release.apk
+    publishing:
+      email:
+        recipients:
+          - vietnv795@gmail.com
+        notify:
+          success: true
+          failure: true
