@@ -3,9 +3,13 @@ workflows:
     name: Build Android Apk Staging
     max_build_duration: 40
     instance_type: mac_mini_m2
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+      cancel_previous_builds: true
     environment:
-      groups:
-        - google_play
       node: v18.20.3
     scripts:
       - name: Install yarn dependencies
