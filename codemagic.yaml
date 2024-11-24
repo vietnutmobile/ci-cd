@@ -3,6 +3,9 @@ workflows:
     name: Build Android Apk Staging
     max_build_duration: 40
     instance_type: mac_mini_m2
+    cache:
+      cache_paths:
+        - ~/.gradle/caches
     triggering:
       events:
         - push
