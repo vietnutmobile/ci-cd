@@ -1,0 +1,13 @@
+- Build android staging và phân phối, thông báo đến tester
+- Build android prod và phân phối, notification to tester
+- Build android prod và đẩy lên chợ 
+
+- Build ios staging và đẩy lên testflight
+- Build ios prod và đẩy lên testflight
+
+
+- nếu mà đẩy prod thì chắc phải phân nhánh release ? hay đánh tag nhỉ
+
+
+- vào main đánh tag => đẩy lên chợ test internal android và internal testflight prod
+- develop => build staging và đẩy link downdload apk notification android + testflight staging 
