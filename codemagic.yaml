@@ -58,7 +58,7 @@ workflows:
         provisioning_profiles:
           - Profile_NutSales_Staging
         certificates:
-          - Nutsales_Distribution
+          - Nutsales-Certificates-distribution
       vars:
         XCODE_WORKSPACE: "nutsales.xcworkspace"
         XCODE_SCHEME: "nutsales(staging)"
