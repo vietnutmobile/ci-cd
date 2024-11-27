@@ -79,6 +79,8 @@ workflows:
       - name: Set up code signing settings on Xcode project
         script: |
           xcode-project use-profiles --warn-only
+      - name: Cat file exportlist
+        script: cat /Users/builder/export_options.plist
       - name: Build ipa for distribution
         script: |
           xcode-project build-ipa \
