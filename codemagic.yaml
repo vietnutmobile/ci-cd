@@ -1,5 +1,5 @@
 workflows:
-  android-staging:
+  android-staging-apk:
     name: Build Android Apk Staging
     max_build_duration: 40
     instance_type: mac_mini_m2
@@ -37,12 +37,12 @@ workflows:
         notify:
           success: true
           failure: true
-  ios-staging:
+  ios-staging-testflight:
     name: Build iOS Staging
     max_build_duration: 40
     instance_type: mac_mini_m2
     integrations:
-      app_store_connect: Apple Publishing Key for CI
+      app_store_connect: app-store-connect
     cache:
       cache_paths:
         - $HOME/Library/Caches/CocoaPods
@@ -97,3 +97,82 @@ workflows:
         auth: integration
         submit_to_testflight: true
         submit_to_app_store: false
+  android-production-apk:
+    name: Build Android Apk Production
+    max_build_duration: 40
+    instance_type: mac_mini_m2
+    cache:
+      cache_paths:
+        - ~/.gradle/caches
+        - $CM_BUILD_DIR/node_modules
+        - $HOME/.gradle/caches
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main1
+      cancel_previous_builds: true
+    environment:
+      node: v18.20.3
+    scripts:
+      - name: Install yarn dependencies
+        script: |
+          yarn
+      - name: Set Android SDK location
+        script: |
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/android/local.properties"
+      - name: Build apk staging
+        script: |
+          cp .env.staging .env 
+          cd android
+          ./gradlew assembleStagingRelease
+    artifacts:
+      - android/app/build/outputs/apk/staging/release/app-staging-release.apk
+    publishing:
+      email:
+        recipients:
+          - vietnv795@gmail.com
+        notify:
+          success: true
+          failure: true
+  android-production-playstore:
+    name: Push Android Production to Playstore
+    max_build_duration: 40
+    instance_type: mac_mini_m2
+    cache:
+      cache_paths:
+        - ~/.gradle/caches
+        - $CM_BUILD_DIR/node_modules
+        - $HOME/.gradle/caches
+    triggering:
+      events:
+        - tag
+      branch_patterns:
+        - pattern: main1
+      cancel_previous_builds: true
+    environment:
+      node: v18.20.3
+    scripts:
+      - name: Install yarn dependencies
+        script: |
+          yarn
+      - name: Set Android SDK location
+        script: |
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/android/local.properties"
+      - name: Build apk staging
+        script: |
+          cp .env.staging .env 
+          cd android
+          ./gradlew assembleStagingRelease
+    artifacts:
+      - android/app/build/outputs/apk/staging/release/app-staging-release.apk
+    publishing:
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: internal
+      email:
+        recipients:
+          - vietnv795@gmail.com
+        notify:
+          success: true
+          failure: true
