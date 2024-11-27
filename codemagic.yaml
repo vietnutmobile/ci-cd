@@ -152,6 +152,8 @@ workflows:
       cancel_previous_builds: true
     environment:
       node: v18.20.3
+      groups:
+        - google_credentials
     scripts:
       - name: Install yarn dependencies
         script: |
