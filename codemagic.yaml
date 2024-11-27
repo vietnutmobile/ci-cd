@@ -38,7 +38,7 @@ workflows:
           success: true
           failure: true
   ios-staging-testflight:
-    name: Build iOS Staging
+    name: Push iOS Staging to Testflight
     max_build_duration: 40
     instance_type: mac_mini_m1
     integrations:
@@ -49,7 +49,7 @@ workflows:
         - $CM_BUILD_DIR/node_modules
     triggering:
       events:
-        - push
+        - tag
       branch_patterns:
         - pattern: main
       cancel_previous_builds: true
@@ -100,7 +100,69 @@ workflows:
         notify:
           success: true
           failure: true
-
+  ios-production-testflight:
+    name: Push iOS Production to Testflight
+    max_build_duration: 40
+    instance_type: mac_mini_m1
+    integrations:
+      app_store_connect: app-store-connect
+    cache:
+      cache_paths:
+        - $HOME/Library/Caches/CocoaPods
+        - $CM_BUILD_DIR/node_modules
+    triggering:
+      events:
+        - tag
+      branch_patterns:
+        - pattern: main1
+      cancel_previous_builds: true
+    environment:
+      vars:
+        XCODE_WORKSPACE: "nutsales.xcworkspace"
+        XCODE_SCHEME: "nutsales(production)"
+        APP_ID: 6503186410
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.nutsales.app
+      node: v18.20.3
+      xcode: 16.0
+      cocoapods: default
+    scripts:
+      - name: Set env to tmp.xcconfig
+        script: |
+          touch $CM_BUILD_DIR/ios/tmp.xcconfig
+          cp $CM_BUILD_DIR/.env.production $CM_BUILD_DIR/ios/tmp.xcconfig
+          sed -i '' 's/["\047]//g' $CM_BUILD_DIR/ios/tmp.xcconfig
+      - name: Install yarn dependencies
+        script: |
+          yarn install
+      - name: Install CocoaPods dependencies
+        script: |
+          cd ios && pod install
+      - name: Set up code signing settings on Xcode project
+        script: |
+          xcode-project use-profiles --warn-only
+      - name: Cat file exportlist
+        script: cat /Users/builder/export_options.plist
+      - name: Build ipa for distribution
+        script: |
+          xcode-project build-ipa \
+            --workspace "$CM_BUILD_DIR/ios/$XCODE_WORKSPACE" \
+            --scheme "$XCODE_SCHEME"
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        submit_to_app_store: false
+      email:
+        recipients:
+          - vietnv795@gmail.com
+        notify:
+          success: true
+          failure: true
   android-production-apk:
     name: Build Android Apk Production
     max_build_duration: 40
