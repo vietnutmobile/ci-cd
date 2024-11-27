@@ -54,15 +54,13 @@ workflows:
         - pattern: main
       cancel_previous_builds: true
     environment:
-      ios_signing:
-        provisioning_profiles:
-          - Profile_NutSales_Staging
-        certificates:
-          - Nutsales-Certificates-distribution
       vars:
         XCODE_WORKSPACE: "nutsales.xcworkspace"
         XCODE_SCHEME: "nutsales(staging)"
         APP_ID: 6503223654
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.nutsales.staging
       node: v18.20.3
       xcode: 16.0
       cocoapods: default
@@ -78,6 +76,9 @@ workflows:
       - name: Install CocoaPods dependencies
         script: |
           cd ios && pod install
+      - name: Set up code signing settings on Xcode project
+        script: |
+          xcode-project use-profiles --warn-only
       - name: Build ipa for distribution
         script: |
           xcode-project build-ipa \
@@ -87,16 +88,17 @@ workflows:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
     publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        submit_to_app_store: false
       email:
         recipients:
           - vietnv795@gmail.com
         notify:
           success: true
           failure: true
-      app_store_connect:
-        auth: integration
-        submit_to_testflight: true
-        submit_to_app_store: false
+
   android-production-apk:
     name: Build Android Apk Production
     max_build_duration: 40
