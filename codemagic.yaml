@@ -65,11 +65,6 @@ workflows:
       xcode: 16.0
       cocoapods: default
     scripts:
-      - name: Set up code signing settings on Xcode project
-        script: |
-          xcode-project use-profiles
-      - name: Cat file exportlist
-        script: cat /Users/builder/export_options.plist
       - name: Install yarn dependencies
         script: |
           yarn install
