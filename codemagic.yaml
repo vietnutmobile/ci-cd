@@ -65,17 +65,17 @@ workflows:
       xcode: 16.0
       cocoapods: default
     scripts:
+      - name: Set env to tmp.xcconfig
+        script: |
+          touch $CM_BUILD_DIR/ios/tmp.xcconfig
+          cp $CM_BUILD_DIR/.env.staging $CM_BUILD_DIR/ios/tmp.xcconfig
+          sed -i '' 's/["\047]//g' $CM_BUILD_DIR/ios/tmp.xcconfig
       - name: Install yarn dependencies
         script: |
           yarn install
       - name: Install CocoaPods dependencies
         script: |
           cd ios && pod install
-      # - name: Run ios test
-      #   script: |
-      #     xcode-project run-tests \
-      #       --workspace "$CM_BUILD_DIR/ios/$XCODE_WORKSPACE" \
-      #       --scheme "$XCODE_SCHEME"
       - name: Set up code signing settings on Xcode project
         script: |
           xcode-project use-profiles --warn-only
