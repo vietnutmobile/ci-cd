@@ -71,6 +71,11 @@ workflows:
       - name: Install CocoaPods dependencies
         script: |
           cd ios && pod install
+      - name: Run ios test
+        script: |
+          xcode-project run-tests \
+            --workspace "$CM_BUILD_DIR/ios/$XCODE_WORKSPACE" \
+            --scheme "$XCODE_SCHEME"
       - name: Set up code signing settings on Xcode project
         script: |
           xcode-project use-profiles --warn-only
