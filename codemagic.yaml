@@ -60,7 +60,7 @@ workflows:
         APP_ID: 6503223654
       ios_signing:
         distribution_type: app_store
-        bundle_identifier: com.nutsales.staging
+        bundle_identifier: com.nutsales.light
       node: v18.20.3
       xcode: 16.0
       cocoapods: default
