@@ -104,6 +104,46 @@ workflows:
         notify:
           success: true
           failure: true
+  android-production-apk:
+    name: Build Android Apk Production
+    max_build_duration: 40
+    instance_type: mac_mini_m2
+    cache:
+      cache_paths:
+        - ~/.gradle/caches
+        - $CM_BUILD_DIR/node_modules
+        - $HOME/.gradle/caches
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+      tag_patterns:
+        - pattern: "*"
+      cancel_previous_builds: true
+    environment:
+      node: v18.20.3
+    scripts:
+      - name: Install yarn dependencies
+        script: |
+          yarn
+      - name: Set Android SDK location
+        script: |
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/android/local.properties"
+      - name: Build apk staging
+        script: |
+          cp .env.production .env 
+          cd android
+          ./gradlew assembleProductRelease
+    artifacts:
+      - android/app/build/outputs/apk/product/release/app-product-release.apk
+    publishing:
+      email:
+        recipients:
+          - vietnv795@gmail.com
+        notify:
+          success: true
+          failure: true
   ios-production-testflight:
     name: Push iOS Production to Testflight
     max_build_duration: 40
@@ -161,48 +201,6 @@ workflows:
         auth: integration
         submit_to_testflight: true
         submit_to_app_store: false
-      email:
-        recipients:
-          - vietnv795@gmail.com
-        notify:
-          success: true
-          failure: true
-  android-production-apk:
-    name: Build Android Apk Production
-    max_build_duration: 40
-    instance_type: mac_mini_m2
-    cache:
-      cache_paths:
-        - ~/.gradle/caches
-        - $CM_BUILD_DIR/node_modules
-        - $HOME/.gradle/caches
-    triggering:
-      events:
-        - push
-        - pull_request
-        - pull_request_labeled
-      branch_patterns:
-        - pattern: main
-      tag_patterns:
-        - pattern: "*"
-      cancel_previous_builds: true
-    environment:
-      node: v18.20.3
-    scripts:
-      - name: Install yarn dependencies
-        script: |
-          yarn
-      - name: Set Android SDK location
-        script: |
-          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/android/local.properties"
-      - name: Build apk staging
-        script: |
-          cp .env.production .env 
-          cd android
-          ./gradlew assembleProductRelease
-    artifacts:
-      - android/app/build/outputs/apk/product/release/app-product-release.apk
-    publishing:
       email:
         recipients:
           - vietnv795@gmail.com
