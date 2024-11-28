@@ -52,6 +52,8 @@ workflows:
         - tag
       branch_patterns:
         - pattern: main
+      tag_patterns:
+        - pattern: "*"
       cancel_previous_builds: true
     environment:
       vars:
@@ -176,7 +178,9 @@ workflows:
       events:
         - push
       branch_patterns:
-        - pattern: main1
+        - pattern: main-app
+      tag_patterns:
+        - pattern: "*"
       cancel_previous_builds: true
     environment:
       node: v18.20.3
@@ -214,7 +218,9 @@ workflows:
       events:
         - tag
       branch_patterns:
-        - pattern: main1
+        - pattern: main-app
+      tag_patterns:
+        - pattern: "*"
       cancel_previous_builds: true
     environment:
       node: v18.20.3
