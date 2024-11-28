@@ -11,6 +11,8 @@ workflows:
     triggering:
       events:
         - push
+        - pull_request
+        - pull_request_labeled
       branch_patterns:
         - pattern: develop
       cancel_previous_builds: true
@@ -49,11 +51,11 @@ workflows:
         - $CM_BUILD_DIR/node_modules
     triggering:
       events:
-        - tag
+        - push
+        - pull_request
+        - pull_request_labeled
       branch_patterns:
-        - pattern: main
-      tag_patterns:
-        - pattern: "*"
+        - pattern: develop
       cancel_previous_builds: true
     environment:
       vars:
@@ -116,7 +118,7 @@ workflows:
       events:
         - tag
       branch_patterns:
-        - pattern: main1
+        - pattern: release
       cancel_previous_builds: true
     environment:
       vars:
@@ -177,8 +179,10 @@ workflows:
     triggering:
       events:
         - push
+        - pull_request
+        - pull_request_labeled
       branch_patterns:
-        - pattern: main-app
+        - pattern: main
       tag_patterns:
         - pattern: "*"
       cancel_previous_builds: true
@@ -193,11 +197,11 @@ workflows:
           echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/android/local.properties"
       - name: Build apk staging
         script: |
-          cp .env.staging .env 
+          cp .env.production .env 
           cd android
-          ./gradlew assembleStagingRelease
+          ./gradlew assembleProductRelease
     artifacts:
-      - android/app/build/outputs/apk/staging/release/app-staging-release.apk
+      - android/app/build/outputs/apk/product/release/app-product-release.apk
     publishing:
       email:
         recipients:
@@ -218,7 +222,7 @@ workflows:
       events:
         - tag
       branch_patterns:
-        - pattern: main-app
+        - pattern: release
       tag_patterns:
         - pattern: "*"
       cancel_previous_builds: true
@@ -235,11 +239,11 @@ workflows:
           echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/android/local.properties"
       - name: Build apk staging
         script: |
-          cp .env.staging .env 
+          cp .env.production .env 
           cd android
-          ./gradlew assembleStagingRelease
+          ./gradlew bundleProductRelease
     artifacts:
-      - android/app/build/outputs/apk/staging/release/app-staging-release.apk
+      - android/app/build/outputs/bundle/productRelease/app-product-release.aab
     publishing:
       google_play:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
