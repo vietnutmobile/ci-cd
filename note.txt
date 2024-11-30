@@ -11,3 +11,5 @@
 
 - vào main đánh tag => đẩy lên chợ test internal android và internal testflight prod
 - develop => build staging và đẩy link downdload apk notification android + testflight staging 
+
+- free build
