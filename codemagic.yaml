@@ -14,11 +14,24 @@ workflows:
         - pull_request
         - pull_request_labeled
       branch_patterns:
-        - pattern: develop
-      cancel_previous_builds: true
+        - pattern: "!(main|release)"
+      cancel_previous_builds: false
     environment:
       node: v18.20.3
     scripts:
+      - name: Exit build if keyword not defined
+        script: |
+          set -e
+          set -x
+          export COMMIT_MSG=$(git log -1 --pretty=%B)
+          echo COMMIT_MSG
+          if [[ $COMMIT_MSG != *"buildcd"* ]]
+            then
+              echo "Commit needs to include 'buildcd' in it's message."
+              exit 1
+            else 
+              echo "Commit message includes 'buildcd', moving forward..."
+          fi
       - name: Install yarn dependencies
         script: |
           yarn
@@ -55,8 +68,8 @@ workflows:
         - pull_request
         - pull_request_labeled
       branch_patterns:
-        - pattern: develop
-      cancel_previous_builds: true
+        - pattern: "!(main|release)"
+      cancel_previous_builds: false
     environment:
       vars:
         XCODE_WORKSPACE: "nutsales.xcworkspace"
@@ -69,6 +82,19 @@ workflows:
       xcode: 16.0
       cocoapods: default
     scripts:
+      - name: Exit build if keyword not defined
+        script: |
+          set -e
+          set -x
+          export COMMIT_MSG=$(git log -1 --pretty=%B)
+          echo COMMIT_MSG
+          if [[ $COMMIT_MSG != *"buildcd"* ]]
+            then
+              echo "Commit needs to include 'buildcd' in it's message."
+              exit 1
+            else 
+              echo "Commit message includes 'buildcd', moving forward..."
+          fi
       - name: Set env to tmp.xcconfig
         script: |
           touch $CM_BUILD_DIR/ios/tmp.xcconfig
@@ -104,6 +130,7 @@ workflows:
         notify:
           success: true
           failure: true
+
   android-production-apk:
     name: Build Android Apk Production
     max_build_duration: 40
