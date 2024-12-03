@@ -237,6 +237,7 @@ function EmailReplyScreen() {
         <TagInput
           editable={true}
           inputProps={{
+            testID: 'input_Cc',
             style: [dimensions.minHeight_38, fonts.size_15, fonts.gray800],
             placeholder: 'Add emails...',
             onBlur: () =>
@@ -301,6 +302,7 @@ function EmailReplyScreen() {
             size={8}
             style={[borders.none, backgrounds.transparent]}
             onPress={pickFile}
+            testID="button_Attach"
           >
             <Icons.PaperClipIcon size={22} color={colors.gray500} />
           </Button>
@@ -324,6 +326,7 @@ function EmailReplyScreen() {
             size={8}
             style={[borders.none, backgrounds.transparent]}
             onPress={() => formik.submitForm()}
+            testID="button_Send"
           >
             <Icons.PaperAirplaneIcon size={24} color={colors.green600} />
           </Button>

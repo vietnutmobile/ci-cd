@@ -57,6 +57,15 @@ export const userApiEndpoints = (builder) => ({
       };
     },
   }),
+  getCountUnreadNotifications: builder.query({
+    invalidatesTags: ['UserCountUnreadNotifications'],
+    query: ({ userId }) => {
+      return {
+        url: `/api/users/${userId}/notifications/overview`,
+        method: 'GET',
+      };
+    },
+  }),
 });
 
 // export const { useGetUserProfileQuery } = userApi;

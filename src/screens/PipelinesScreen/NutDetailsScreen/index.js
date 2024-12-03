@@ -33,7 +33,7 @@ import { Images } from '@/theme/ImageProvider';
 import { useRoute } from '@react-navigation/native';
 import { HStack, ScrollView } from 'native-base';
 import React, { useEffect, useMemo, useState } from 'react';
-import { KeyboardAvoidingView, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, View } from 'react-native';
 import * as Icons from 'react-native-heroicons/outline';
 import { useDispatch } from 'react-redux';
 
@@ -168,6 +168,7 @@ function NutDetailsScreen() {
                   type="native"
                   key={tab.id}
                   onPress={() => setActiveTabId(tab.id)}
+                  testID={`button_${tab.name}`}
                 >
                   <Text
                     style={
@@ -315,6 +316,7 @@ function NutDetailsScreen() {
               navigation.navigate('EmailComposeScreen');
             }}
             leftIcon={<Icons.PencilIcon size={18} color={colors.green600} fill={colors.white} />}
+            testID="button_Compose"
           >
             <Text style={[fonts.size_14, fonts.semi, fonts.white]}>Compose</Text>
           </Button>

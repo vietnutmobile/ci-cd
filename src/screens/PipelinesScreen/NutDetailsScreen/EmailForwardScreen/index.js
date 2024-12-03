@@ -233,6 +233,7 @@ function EmailForwardScreen() {
         <TagInput
           editable={true}
           inputProps={{
+            testID: 'input_To',
             style: [dimensions.minHeight_38, fonts.size_15, fonts.gray800],
             placeholder: 'Add emails...',
             onBlur: () =>
@@ -287,6 +288,7 @@ function EmailForwardScreen() {
         <TagInput
           editable={true}
           inputProps={{
+            testID: 'input_Cc',
             style: [dimensions.minHeight_38, fonts.size_15, fonts.gray800],
             placeholder: 'Add emails...',
             onBlur: () =>

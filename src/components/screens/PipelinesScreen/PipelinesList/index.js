@@ -73,6 +73,7 @@ function PipelinesList({ navigation }) {
                       pipeline,
                     });
                   }}
+                  testID={`button_${name}`}
                 >
                   <HStack
                     backgroundColor={colorPalette[index % (colorPalette.length - 1)]}

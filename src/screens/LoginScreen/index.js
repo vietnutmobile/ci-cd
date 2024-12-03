@@ -1,8 +1,8 @@
-import {Button, Image, Text} from '@/components/atoms';
+import { Button, Image, Text } from '@/components/atoms';
 import SafeScreen from '@/components/modules/SafeScreen';
-import {AzureSignIn, Device} from '@/helpers';
-import {showSimpleAlert} from '@/helpers/alerts';
-import {GoogleSignIn} from '@/helpers/authentication/google-signin';
+import { AzureSignIn, Device } from '@/helpers';
+import { showSimpleAlert } from '@/helpers/alerts';
+import { GoogleSignIn } from '@/helpers/authentication/google-signin';
 import {
   AUTH_PROVIDER_APPLE,
   AUTH_PROVIDER_AZURE,
@@ -10,21 +10,20 @@ import {
   SIGN_IN_ERROR_MESSAGE,
   TRY_AGAIN_ERROR_MESSAGE,
 } from '@/helpers/constants';
-import {fetchAppToken} from '@/store/features/authentication';
-import {useTheme} from '@/theme';
-import {Images} from '@/theme/ImageProvider';
-import {appleAuth} from '@invertase/react-native-apple-authentication';
-import {HStack} from 'native-base';
-import {useState} from 'react';
-import {View} from 'react-native';
-import DeviceInfo from 'react-native-device-info';
-import {useDispatch} from 'react-redux';
+import { getAppVersionFromPackageJson } from '@/helpers/content';
+import { fetchAppToken } from '@/store/features/authentication';
+import { useTheme } from '@/theme';
+import { Images } from '@/theme/ImageProvider';
+import { appleAuth } from '@invertase/react-native-apple-authentication';
+import { HStack } from 'native-base';
+import { useState } from 'react';
+import { View } from 'react-native';
+import { useDispatch } from 'react-redux';
 
-function LoginScreen({navigation}) {
+function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
 
-  const {layout, gutters, backgrounds, dimensions, fonts, colors, borders} =
-    useTheme();
+  const { layout, gutters, backgrounds, dimensions, fonts, colors, borders } = useTheme();
   const [loggingInWithGoogle, setLoggingInWithGoogle] = useState(false);
   const [loggingInWithAzure, setLoggingInWithAzure] = useState(false);
   const [loggingInWithApple, setLoggingInWithApple] = useState(false);
@@ -48,7 +47,7 @@ function LoginScreen({navigation}) {
     try {
       const result = await dispatch(
         fetchAppToken({
-          ...signInResult.data,
+          ...signInResult,
           provider: AUTH_PROVIDER_GOOGLE,
         }),
       );
@@ -108,9 +107,7 @@ function LoginScreen({navigation}) {
         requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
       });
 
-      credentialState = await appleAuth.getCredentialStateForUser(
-        signInResult.user,
-      );
+      credentialState = await appleAuth.getCredentialStateForUser(signInResult.user);
 
       if (credentialState === appleAuth.State.AUTHORIZED) {
         console.log('credentialState', credentialState);
@@ -153,7 +150,8 @@ function LoginScreen({navigation}) {
             layout.itemsCenter,
             layout.justifyCenter,
             gutters.paddingB_60,
-          ]}>
+          ]}
+        >
           <Image
             source={Images.LOGO}
             style={[
@@ -192,15 +190,9 @@ function LoginScreen({navigation}) {
               py={2.5}
               spinnerPlacement="end"
               onPress={signInWithGoogle}
-              isLoadingText={
-                <Images.IC_GOOGLE_SIGN_IN width={180} height={22} />
-              }
-              style={[
-                backgrounds.white,
-                borders._1,
-                borders.roundedFull,
-                borders.gray400,
-              ]}>
+              isLoadingText={<Images.IC_GOOGLE_SIGN_IN width={180} height={22} />}
+              style={[backgrounds.white, borders._1, borders.roundedFull, borders.gray400]}
+            >
               <Images.IC_GOOGLE_SIGN_IN width={180} height={22} />
             </Button>
           </HStack>
@@ -231,12 +223,8 @@ function LoginScreen({navigation}) {
               spinnerPlacement="end"
               onPress={signInWithAzure}
               isLoadingText={<Images.IC_MS_SIGN_IN width={180} height={22} />}
-              style={[
-                backgrounds.white,
-                borders._1,
-                borders.roundedFull,
-                borders.gray400,
-              ]}>
+              style={[backgrounds.white, borders._1, borders.roundedFull, borders.gray400]}
+            >
               <Images.IC_MS_SIGN_IN width={180} height={22} />
             </Button>
           </HStack>
@@ -267,34 +255,28 @@ function LoginScreen({navigation}) {
                 py={2.5}
                 spinnerPlacement="end"
                 onPress={signInWithApple}
-                isLoadingText={
-                  <Images.IC_APPLE_SIGN_IN width={180} height={22} />
-                }
-                style={[
-                  backgrounds.white,
-                  borders._1,
-                  borders.roundedFull,
-                  borders.gray400,
-                ]}>
+                isLoadingText={<Images.IC_APPLE_SIGN_IN width={180} height={22} />}
+                style={[backgrounds.white, borders._1, borders.roundedFull, borders.gray400]}
+              >
                 <Images.IC_APPLE_SIGN_IN width={180} height={22} />
               </Button>
             </HStack>
           )}
 
           <Text style={[gutters.marginT_60, gutters.paddingH_20, fonts.center]}>
-            <Text style={[fonts.size_12_150]}>
-              By using Nutsales, you agree to our{' '}
-            </Text>
+            <Text style={[fonts.size_12_150]}>By using Nutsales, you agree to our </Text>
             {'\n'}
             <Text
               onPress={() => navigation.navigate('TermsAndConditionsScreen')}
-              style={[fonts.size_12_150, fonts.green600]}>
+              style={[fonts.size_12_150, fonts.green600]}
+            >
               Terms and Conditions
             </Text>
             <Text style={[fonts.size_12_150]}> and </Text>
             <Text
               onPress={() => navigation.navigate('PrivacyPolicyScreen')}
-              style={[fonts.size_12_150, fonts.green600]}>
+              style={[fonts.size_12_150, fonts.green600]}
+            >
               Privacy Policy
             </Text>
           </Text>
@@ -309,8 +291,9 @@ function LoginScreen({navigation}) {
             {
               bottom: 0,
             },
-          ]}>
-          Version: {DeviceInfo.getVersion()}
+          ]}
+        >
+          Version: {getAppVersionFromPackageJson()}
         </Text>
       </View>
     </SafeScreen>

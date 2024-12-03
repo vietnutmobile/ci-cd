@@ -1,8 +1,10 @@
 /* eslint-disable react-native/no-inline-styles */
-import {Spinner} from 'native-base';
-import React, {useEffect, useState} from 'react';
-import {Linking, StyleSheet, useWindowDimensions, View} from 'react-native';
+import { createHtmlViewBaseStyleSheet, isEmailMediaHeavy } from '@/helpers';
+import { Spinner } from 'native-base';
+import React, { useEffect, useState } from 'react';
+import { Linking, StyleSheet, useWindowDimensions, View } from 'react-native';
 import AutoHeightWebView from 'react-native-autoheight-webview';
+import RenderHTML from 'react-native-render-html';
 
 const injectedJavaScript = `  
 function findWidestElement() {
@@ -47,13 +49,14 @@ type Props = {
   html: string;
   scrollToItem?: () => void;
   useLoading?: boolean;
+  widthContent?: number;
 };
 
-const WebViewAuto = ({html, scrollToItem, useLoading = false}: Props) => {
+const WebViewAuto = ({ html, scrollToItem, useLoading = false, widthContent }: Props) => {
   const [loading, setLoading] = useState(true);
   const [scale, setScale] = useState(1);
-  const {width} = useWindowDimensions();
-  const htmlRenderWidth = width - 28;
+  const { width } = useWindowDimensions();
+  const htmlRenderWidth = widthContent || width - 28;
 
   useEffect(() => {
     setTimeout(() => {
@@ -81,13 +84,13 @@ const WebViewAuto = ({html, scrollToItem, useLoading = false}: Props) => {
         source={{
           html,
         }}
-        onNavigationStateChange={event => {
+        onNavigationStateChange={(event) => {
           if (event.url !== 'about:blank') {
             return false;
           }
         }}
         showsVerticalScrollIndicator={false}
-        onShouldStartLoadWithRequest={request => {
+        onShouldStartLoadWithRequest={(request) => {
           let isOpenLink = request.url.startsWith('http');
           if (isOpenLink) {
             Linking.openURL(request.url);
@@ -102,12 +105,9 @@ const WebViewAuto = ({html, scrollToItem, useLoading = false}: Props) => {
         scrollEnabled={false}
         viewportContent={'width=device-width, user-scalable=no'}
         customScript={injectedJavaScript}
-        onMessage={event => {
+        onMessage={(event) => {
           if (event.nativeEvent.data && scale === 1) {
-            setScale(
-              htmlRenderWidth /
-                Math.max(Number(event.nativeEvent.data), htmlRenderWidth),
-            );
+            setScale(htmlRenderWidth / Math.max(Number(event.nativeEvent.data), htmlRenderWidth));
             setLoading(false);
           }
         }}

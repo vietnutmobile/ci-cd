@@ -44,6 +44,7 @@ export const BottomTabStack = () => {
         options={{
           tabBarLabel: ({ color }) => renderTabLabel('Dashboard', color),
           tabBarIcon: ({ color }) => <Icons.PresentationChartBarIcon size={20} color={color} />,
+          tabBarTestID: 'text_Dashboard',
         }}
       />
       <BottomTab.Screen
@@ -52,6 +53,7 @@ export const BottomTabStack = () => {
         options={{
           tabBarLabel: ({ color }) => renderTabLabel('Pipelines', color),
           tabBarIcon: ({ color }) => <Icons.Squares2X2Icon size={20} color={color} />,
+          tabBarTestID: 'text_Pipelines',
         }}
       />
       <BottomTab.Screen
@@ -60,6 +62,7 @@ export const BottomTabStack = () => {
         options={{
           tabBarLabel: ({ color }) => renderTabLabel('Email Hub', color),
           tabBarIcon: ({ color }) => <Icons.FolderOpenIcon size={20} color={color} />,
+          tabBarTestID: 'text_Email_Hub',
         }}
       />
       <BottomTab.Screen
@@ -68,6 +71,7 @@ export const BottomTabStack = () => {
         options={{
           tabBarLabel: ({ color }) => renderTabLabel('Contacts', color),
           tabBarIcon: ({ color }) => <Icons.UsersIcon size={20} color={color} />,
+          tabBarTestID: 'text_Contacts',
         }}
       />
       <BottomTab.Screen
@@ -76,6 +80,7 @@ export const BottomTabStack = () => {
         options={{
           tabBarLabel: ({ color }) => renderTabLabel('Account', color),
           tabBarIcon: ({ color }) => <Icons.UserCircleIcon size={20} color={color} />,
+          tabBarTestID: 'text_Account',
         }}
       />
     </BottomTab.Navigator>

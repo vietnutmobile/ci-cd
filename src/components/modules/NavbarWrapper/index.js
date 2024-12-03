@@ -36,6 +36,7 @@ function NavbarWrapper({
           style={[layout.row, layout.itemsCenter, gutters.paddingR_6]}
           type="native"
           onPress={() => navigator.back()}
+          testID="button_Back"
         >
           <Icons.ChevronLeftIcon size={15} color={colors.gray600} />
           <Text style={[gutters.marginL_6, fonts.size_15, fonts.medium, fonts.gray600]}>Back</Text>

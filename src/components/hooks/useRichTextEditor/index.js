@@ -90,7 +90,10 @@ const useRichTextEditor = ({
       .filter(Boolean);
   }, [editorConfigs.toolbarItems, toolbarContext]);
 
-  const renderEditor = useCallback(() => <RichText editor={editor} />, [editor]);
+  const renderEditor = useCallback(
+    () => <RichText testID={'rich_text_editor'} editor={editor} />,
+    [editor],
+  );
 
   const renderToolbar = useCallback(() => {
     return toolbarContext === ToolbarContext.Link ? (
@@ -125,13 +128,15 @@ const useRichTextEditor = ({
         keyExtractor={(item, index) => {
           return `${item.name}-${index}`;
         }}
-        renderItem={({ item: { name, onPress, disabled, active, image } }) => {
+        renderItem={({ item: { name, onPress, disabled, active, image, testID } }) => {
           const isActive = active(helpers);
 
           return name === '|' ? (
             <Text style={[gutters.paddingH_8, fonts.size_20_100, fonts.gray200]}>|</Text>
           ) : (
             <Button
+              testID={testID}
+              key={name}
               size={7}
               style={[
                 gutters.marginH_4,

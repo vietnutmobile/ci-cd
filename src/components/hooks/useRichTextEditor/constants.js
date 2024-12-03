@@ -6,6 +6,7 @@ import { Platform } from 'react-native';
 export const DEFAULT_TOOLBAR_ITEMS = [
   {
     name: '|',
+    testID: 'rt_toolbar_button_separator',
     onPress:
       ({ editor }) =>
       () => {},
@@ -15,6 +16,7 @@ export const DEFAULT_TOOLBAR_ITEMS = [
   },
   {
     name: 'bold',
+    testID: 'rt_toolbar_button_bold',
     onPress:
       ({ editor }) =>
       () =>
@@ -25,6 +27,7 @@ export const DEFAULT_TOOLBAR_ITEMS = [
   },
   {
     name: 'italic',
+    testID: 'rt_toolbar_button_italic',
     onPress:
       ({ editor }) =>
       () =>
@@ -35,6 +38,7 @@ export const DEFAULT_TOOLBAR_ITEMS = [
   },
   {
     name: 'link',
+    testID: 'rt_toolbar_button_link',
     onPress:
       ({ setToolbarContext, editorState, editor }) =>
       () => {
@@ -52,6 +56,7 @@ export const DEFAULT_TOOLBAR_ITEMS = [
   },
   {
     name: 'taskList',
+    testID: 'rt_toolbar_button_taskList',
     onPress:
       ({ editor }) =>
       () =>
@@ -62,6 +67,7 @@ export const DEFAULT_TOOLBAR_ITEMS = [
   },
   {
     name: 'heading',
+    testID: 'rt_toolbar_button_heading',
     onPress:
       ({ setToolbarContext }) =>
       () =>
@@ -72,6 +78,7 @@ export const DEFAULT_TOOLBAR_ITEMS = [
   },
   {
     name: 'code',
+    testID: 'rt_toolbar_button_code',
     onPress:
       ({ editor }) =>
       () =>
@@ -82,6 +89,7 @@ export const DEFAULT_TOOLBAR_ITEMS = [
   },
   {
     name: 'underline',
+    testID: 'rt_toolbar_button_underline',
     onPress:
       ({ editor }) =>
       () =>
@@ -92,6 +100,7 @@ export const DEFAULT_TOOLBAR_ITEMS = [
   },
   {
     name: 'strike',
+    testID: 'rt_toolbar_button_strike',
     onPress:
       ({ editor }) =>
       () =>
@@ -102,6 +111,7 @@ export const DEFAULT_TOOLBAR_ITEMS = [
   },
   {
     name: 'blockquote',
+    testID: 'rt_toolbar_button_blockquote',
     onPress:
       ({ editor }) =>
       () =>
@@ -112,6 +122,7 @@ export const DEFAULT_TOOLBAR_ITEMS = [
   },
   {
     name: 'orderedList',
+    testID: 'rt_toolbar_button_orderedList',
     onPress:
       ({ editor }) =>
       () =>
@@ -122,6 +133,7 @@ export const DEFAULT_TOOLBAR_ITEMS = [
   },
   {
     name: 'bulletList',
+    testID: 'rt_toolbar_button_bulletList',
     onPress:
       ({ editor }) =>
       () =>
@@ -131,9 +143,8 @@ export const DEFAULT_TOOLBAR_ITEMS = [
     image: () => EditorIcons.bulletList,
   },
   {
-    // Regular list items (li) and task list items both use the
-    // same sink command and button just with a different parameter, so we check both states here
     name: 'indent',
+    testID: 'rt_toolbar_button_indent',
     onPress:
       ({ editor, editorState }) =>
       () =>
@@ -143,9 +154,8 @@ export const DEFAULT_TOOLBAR_ITEMS = [
     image: () => EditorIcons.indent,
   },
   {
-    // Regular list items (li) and task list items both use the
-    // same lift command and button just with a different parameter, so we check both states here
     name: 'outdent',
+    testID: 'rt_toolbar_button_outdent',
     onPress:
       ({ editor, editorState }) =>
       () =>
@@ -156,6 +166,7 @@ export const DEFAULT_TOOLBAR_ITEMS = [
   },
   {
     name: 'undo',
+    testID: 'rt_toolbar_button_undo',
     onPress:
       ({ editor }) =>
       () =>
@@ -166,6 +177,7 @@ export const DEFAULT_TOOLBAR_ITEMS = [
   },
   {
     name: 'redo',
+    testID: 'rt_toolbar_button_redo',
     onPress:
       ({ editor }) =>
       () =>
@@ -176,6 +188,7 @@ export const DEFAULT_TOOLBAR_ITEMS = [
   },
   {
     name: 'image',
+    testID: 'rt_toolbar_button_image',
     onPress:
       ({ editor }) =>
       async () => {
@@ -191,6 +204,7 @@ export const DEFAULT_TOOLBAR_ITEMS = [
 export const HEADING_ITEMS = [
   {
     name: 'close',
+    testID: 'rt_toolbar_button_close',
     onPress:
       ({ setToolbarContext }) =>
       () =>
@@ -199,66 +213,17 @@ export const HEADING_ITEMS = [
     disabled: () => false,
     image: () => EditorIcons.close,
   },
-  {
-    name: 'h1',
+  ...['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].map((name, index) => ({
+    name,
+    testID: `rt_toolbar_button_${name}`,
     onPress:
       ({ editor }) =>
       () =>
-        editor.toggleHeading(1),
-    active: ({ editorState }) => editorState.headingLevel === 1,
+        editor.toggleHeading(index + 1),
+    active: ({ editorState }) => editorState.headingLevel === index + 1,
     disabled: ({ editorState }) => !editorState.canToggleHeading,
-    image: () => EditorIcons.h1,
-  },
-  {
-    name: 'h2',
-    onPress:
-      ({ editor }) =>
-      () =>
-        editor.toggleHeading(2),
-    active: ({ editorState }) => editorState.headingLevel === 2,
-    disabled: ({ editorState }) => !editorState.canToggleHeading,
-    image: () => EditorIcons.h2,
-  },
-  {
-    name: 'h3',
-    onPress:
-      ({ editor }) =>
-      () =>
-        editor.toggleHeading(3),
-    active: ({ editorState }) => editorState.headingLevel === 3,
-    disabled: ({ editorState }) => !editorState.canToggleHeading,
-    image: () => EditorIcons.h3,
-  },
-  {
-    name: 'h4',
-    onPress:
-      ({ editor }) =>
-      () =>
-        editor.toggleHeading(4),
-    active: ({ editorState }) => editorState.headingLevel === 4,
-    disabled: ({ editorState }) => !editorState.canToggleHeading,
-    image: () => EditorIcons.h4,
-  },
-  {
-    name: 'h5',
-    onPress:
-      ({ editor }) =>
-      () =>
-        editor.toggleHeading(5),
-    active: ({ editorState }) => editorState.headingLevel === 5,
-    disabled: ({ editorState }) => !editorState.canToggleHeading,
-    image: () => EditorIcons.h5,
-  },
-  {
-    name: 'h6',
-    onPress:
-      ({ editor }) =>
-      () =>
-        editor.toggleHeading(6),
-    active: ({ editorState }) => editorState.headingLevel === 6,
-    disabled: ({ editorState }) => !editorState.canToggleHeading,
-    image: () => EditorIcons.h6,
-  },
+    image: () => EditorIcons[name],
+  })),
 ];
 
 export const ALL_TOOLBAR_ITEMS = DEFAULT_TOOLBAR_ITEMS.concat(HEADING_ITEMS);

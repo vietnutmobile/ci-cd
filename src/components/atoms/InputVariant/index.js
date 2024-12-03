@@ -21,7 +21,7 @@ const TextInputVariant = ({
 }) => {
   const { layout, fonts, borders, gutters, backgrounds, colors, dimensions } = useTheme();
   const LeftIcon = useMemo(() => leftIcon, []);
-  const RightIcon = useMemo(() => rightIcon, []);
+  const RightIcon = useMemo(() => rightIcon, [rightIcon]);
 
   const testIDProps = props.name ? testSelector(`input_${props.name}`) : {};
 

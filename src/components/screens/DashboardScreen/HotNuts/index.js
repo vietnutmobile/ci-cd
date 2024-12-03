@@ -3,7 +3,11 @@ import Button from '@/components/atoms/ButtonVariant';
 import Spinner from '@/components/atoms/Spinner';
 import { colorPalette } from '@/helpers/constants';
 import useNavigator from '@/helpers/hooks/use-navigation';
-import { useGetHotNutsQuery, useGetUserProfileQuery } from '@/store/services';
+import {
+  useGetHotNutsQuery,
+  useGetNutsSummaryQuery,
+  useGetUserProfileQuery,
+} from '@/store/services';
 import { useTheme } from '@/theme';
 import { Images } from '@/theme/ImageProvider';
 import { useFocusEffect, useRoute } from '@react-navigation/native';
@@ -41,8 +45,15 @@ function HotNuts({ navigation }) {
       skip: !currentUserId,
     },
   );
+  const { data: nutsSummary, isFetching } = useGetNutsSummaryQuery({
+    isAllNuts: 1,
+    page: 1,
+    perPage: 20,
+  });
 
-  const nuts = useMemo(() => nutsResponse?.data ?? [], [nutsResponse?.data]);
+  console.log('nutsSummary', nutsSummary);
+
+  const nuts = nutsSummary?.data ?? [];
 
   useFocusEffect(
     useCallback(() => {
@@ -57,126 +68,82 @@ function HotNuts({ navigation }) {
       {isLoading ? (
         <Spinner />
       ) : (
-        <>
-          <HStack
-            backgroundColor={colorPalette[0]}
-            px={3}
-            py={2}
-            justifyContent="space-between"
-            alignItems="center"
-            style={[
-              layout.row,
-              layout.itemsCenter,
-              layout.justifyBetween,
-              gutters.marginT_12,
-              gutters.padding_8,
-              borders.rounded_6,
-            ]}
-            space={2}
-          >
-            <HStack flex={1} justifyContent="flex-start" alignItems="center" space={2}>
-              <Icons.FireIcon size={20} color={colors.white} />
-              <Text style={[fonts.size_15, fonts.medium, fonts.white]}>Assigned Nuts</Text>
-            </HStack>
-
+        <FlatList
+          style={[gutters.paddingT_12]}
+          refreshing={isLoading}
+          ListEmptyComponent={
             <View
-              style={[
-                {
-                  paddingHorizontal: 3,
-                  paddingVertical: 1,
-                  borderRadius: 10,
-                  backgroundColor: 'rgba(255,255,255,0.15)',
-                },
-              ]}
+              style={[layout.column, layout.itemsCenter, gutters.paddingH_12, gutters.paddingT_80]}
             >
-              <Text style={[gutters.padding_2, fonts.size_15, fonts.medium, fonts.white]}>
-                {nuts.length}
+              <Images.IC_NUT
+                style={[gutters.marginB_16]}
+                width={60}
+                height={60}
+                color={colors.green600}
+                fill={colors.green600}
+              />
+              <Text style={[fonts.size_14, fonts.center, fonts.gray800]}>
+                There is no Nuts assigned to you yet
               </Text>
             </View>
-          </HStack>
+          }
+          onRefresh={() => {
+            setPerPage('10');
+            refetchNuts();
+          }}
+          data={nuts}
+          renderItem={({ item: nut }) => {
+            const { id, name, assignedUser, stage } = nut;
+            //
+            // const assigneeName =
+            //   assignedUser?.name || getUserNameFromEmail(assignedUser?.email ?? '');
 
-          <FlatList
-            style={[gutters.paddingT_12]}
-            refreshing={isLoading}
-            ListEmptyComponent={
-              <View
+            return (
+              <Button
                 style={[
-                  layout.column,
-                  layout.itemsCenter,
-                  gutters.paddingH_12,
-                  gutters.paddingT_80,
+                  {
+                    minWidth: '100%',
+                  },
                 ]}
+                key={id}
+                type="native"
+                onPress={() => {
+                  navigator.navigate('NutDetailsScreen', {
+                    nutId: id,
+                  });
+                }}
               >
-                <Images.IC_NUT
-                  style={[gutters.marginB_16]}
-                  width={60}
-                  height={60}
-                  color={colors.green600}
-                  fill={colors.green600}
-                />
-                <Text style={[fonts.size_14, fonts.center, fonts.gray800]}>
-                  There is no Nuts assigned to you yet
-                </Text>
-              </View>
-            }
-            onRefresh={() => {
-              setPerPage('10');
-              refetchNuts();
-            }}
-            data={nuts}
-            renderItem={({ item: nut }) => {
-              const { id, name, assignedUser, stage } = nut;
-              //
-              // const assigneeName =
-              //   assignedUser?.name || getUserNameFromEmail(assignedUser?.email ?? '');
-
-              return (
-                <Button
+                <VStack
                   style={[
-                    {
-                      minWidth: '100%',
-                    },
+                    gutters.marginB_12,
+                    gutters.padding_14,
+                    borders.rounded_4,
+                    backgrounds.white,
                   ]}
-                  key={id}
-                  type="native"
-                  onPress={() => {
-                    navigator.navigate('NutDetailsScreen', {
-                      nutId: id,
-                    });
-                  }}
+                  alignItems="flex-start"
+                  justifyContent="space-between"
+                  space={2}
                 >
-                  <VStack
-                    style={[
-                      gutters.marginB_12,
-                      gutters.padding_14,
-                      borders.rounded_4,
-                      backgrounds.white,
-                    ]}
-                    alignItems="flex-start"
-                    justifyContent="space-between"
-                    space={2}
+                  <Text
+                    style={[fonts.size_15, fonts.medium, fonts.gray800]}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
                   >
-                    <Text
-                      style={[fonts.size_15, fonts.medium, fonts.gray800]}
-                      numberOfLines={1}
-                      ellipsizeMode="tail"
-                    >
-                      {name.trim()}
-                    </Text>
-                    <Text style={[fonts.size_14, fonts.medium, fonts.gray500, fonts.green600]}>
-                      <Text style={[fonts.gray600]}>Stage:</Text> {stage?.name ?? ''}
-                    </Text>
-                  </VStack>
-                </Button>
-              );
-            }}
-            keyExtractor={(item, index) => index?.id ?? index.toString()}
-            onEndReached={() => {
-              setPerPage(perPage + 10);
-            }}
-            onEndReachedThreshold={0.5}
-          />
-        </>
+                    {name.trim()}
+                  </Text>
+                  <Text style={[fonts.size_14, fonts.medium, fonts.gray500, fonts.green600]}>
+                    <Text style={[fonts.gray600]}>Stage:</Text> {stage?.name ?? ''}
+                  </Text>
+                </VStack>
+              </Button>
+            );
+          }}
+          keyExtractor={(item, index) => index?.id ?? index.toString()}
+          onEndReached={() => {
+            setPerPage(perPage + 10);
+          }}
+          onEndReachedThreshold={0.5}
+        />
       )}
     </>
   );

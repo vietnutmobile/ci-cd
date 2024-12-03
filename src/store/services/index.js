@@ -29,7 +29,9 @@ export const rootApi = createApi({
     'GlobalConfigs',
     'UserProfile',
     'UserProfileTokens',
+    'UserCountUnreadNotifications',
     'ContactTags',
+    'OrganizationNutsSummary',
   ],
   baseQuery: baseQueryWithReAuth,
   endpoints: () => ({}),
@@ -101,6 +103,8 @@ export const {
   useConvertEmailhubToNutMutation,
   useReportNotSpamMutation,
   useGetEmailhubDetailQuery,
+  useGetNutsSummaryQuery,
+  useLazyGetNutsSummaryQuery,
 } = organizationApis;
 
 export const {
@@ -109,4 +113,5 @@ export const {
   useChangeUserOnlineStatusMutation,
   useUpdateUserProfileMutation,
   useUpdateUserDeviceTokensMutation,
+  useGetCountUnreadNotificationsQuery,
 } = userApis;

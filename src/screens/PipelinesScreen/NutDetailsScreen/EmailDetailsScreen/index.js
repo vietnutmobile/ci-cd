@@ -2,15 +2,7 @@ import { Button, Text } from '@/components/atoms';
 import SafeScreen from '@/components/modules/SafeScreen';
 import WebViewAuto from '@/components/modules/WebViewAuto';
 import NutDetailsScreenNavbar from '@/components/screens/NutDetailsScreen/Navbar';
-import {
-  cleanHTML,
-  createHtmlViewBaseStyleSheet,
-  formatEmailDate,
-  htmlToPlainText,
-  isEmailMediaHeavy,
-  processEmailSender,
-  sanitize,
-} from '@/helpers';
+import { formatEmailDate, htmlToPlainText, processEmailSender } from '@/helpers';
 import { MODE_FORWARD, MODE_REPLY_ALL, MODE_REPLY_SINGLE } from '@/helpers/constants';
 import { downloadFile } from '@/helpers/file-system';
 import useNavigator from '@/helpers/hooks/use-navigation';
@@ -19,12 +11,11 @@ import { startEmailForward, startEmailReply } from '@/store/features/email-compo
 import { useTheme } from '@/theme';
 import { Images } from '@/theme/ImageProvider';
 import { useRoute } from '@react-navigation/native';
-import { FlatList, HStack, ScrollView, VStack } from 'native-base';
+import { Box, FlatList, HStack, ScrollView, VStack } from 'native-base';
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Animated, useWindowDimensions, View } from 'react-native';
 import * as Icons from 'react-native-heroicons/outline';
-import RenderHtml from 'react-native-render-html';
 import { useDispatch } from 'react-redux';
 import truncate from 'truncate-html';
 
@@ -36,11 +27,9 @@ function EmailDetailsScreen() {
   const { layout, gutters, fonts, colors, borders, backgrounds, dimensions, effects } = useTheme();
 
   const [shouldShowDeliveryDetails, setShouldShowDeliveryDetails] = useState(false);
-  const [shouldUseWebview, setShouldUseWebview] = useState(undefined);
   const rotation = useState(new Animated.Value(0))[0];
 
   const { width } = useWindowDimensions();
-  const htmlRenderWidth = width - 48;
 
   const rotateInterpolate = rotation.interpolate({
     inputRange: [0, 1],
@@ -52,18 +41,6 @@ function EmailDetailsScreen() {
   };
 
   const { email, nutId } = route?.params;
-
-  const messageBody = useMemo(
-    () =>
-      shouldUseWebview
-        ? cleanHTML(email?.messageBodyHtml ?? '')
-        : sanitize(
-            cleanHTML(email?.messageBodyHtml ?? '', {
-              shouldConvertLineBreak: false,
-            }),
-          ),
-    [email?.messageBodyHtml, shouldUseWebview],
-  );
 
   const date = formatEmailDate(email?.date ?? new Date());
 
@@ -131,13 +108,6 @@ function EmailDetailsScreen() {
     setShouldShowDeliveryDetails(!shouldShowDeliveryDetails);
   };
 
-  useEffect(() => {
-    if (email?.messageBodyHtml) {
-      const shouldUsingWebview = isEmailMediaHeavy(email?.messageBodyHtml);
-      setShouldUseWebview(shouldUsingWebview);
-    }
-  }, [email?.messageBodyHtml]);
-
   return (
     <SafeScreen style={[backgrounds.gray100]}>
       <NutDetailsScreenNavbar />
@@ -191,7 +161,6 @@ function EmailDetailsScreen() {
                 >
                   {messageBodyText}
                 </Text>
-
                 <Text
                   numberOfLines={1}
                   ellipsizeMode="tail"
@@ -211,7 +180,6 @@ function EmailDetailsScreen() {
                 <View style={[dimensions.width_38]}>
                   <Text style={[fonts.size_13_150, fonts.gray800]}>From</Text>
                 </View>
-
                 <View style={[layout.flex_1]}>
                   <Text style={[fonts.size_13_150, fonts.gray800]}>{email?.sender}</Text>
                 </View>
@@ -256,23 +224,10 @@ function EmailDetailsScreen() {
             <FlatList data={attachments} renderItem={renderFile} />
           </View>
         )}
-
-        {messageBody && typeof shouldUseWebview !== 'undefined' && (
-          <View style={[gutters.marginT_16]}>
-            {shouldUseWebview ? (
-              <WebViewAuto html={email.messageBodyHtml} />
-            ) : (
-              <RenderHtml
-                contentWidth={htmlRenderWidth}
-                source={{
-                  html: messageBody,
-                }}
-                enableExperimentalMarginCollapsing={true}
-                tagsStyles={createHtmlViewBaseStyleSheet()}
-              />
-            )}
-          </View>
-        )}
+        {email.messageBodyHtml ? (
+          <WebViewAuto html={email.messageBodyHtml} widthContent={width - 48} />
+        ) : null}
+        <Box h={10} />
       </ScrollView>
 
       {shouldAllowReply ? (
@@ -305,6 +260,7 @@ function EmailDetailsScreen() {
                   );
                   navigation.navigate('EmailReplyScreen');
                 }}
+                testID="button_Reply"
               >
                 <Images.IC_REPLY color={colors.green600} width={20} height={20} />
                 <Text
@@ -333,6 +289,7 @@ function EmailDetailsScreen() {
                   );
                   navigation.navigate('EmailReplyScreen');
                 }}
+                testID="button_Reply All"
               >
                 <Images.IC_REPLY_ALL color={colors.green600} width={20} height={20} />
                 <Text
@@ -362,6 +319,7 @@ function EmailDetailsScreen() {
                 );
                 navigation.navigate('EmailForwardScreen');
               }}
+              testID="button_Forward"
             >
               <Text
                 style={[

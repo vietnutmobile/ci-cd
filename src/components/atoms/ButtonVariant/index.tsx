@@ -35,7 +35,7 @@ const Button = ({ children, type = 'default', style, disabled, ...props }: Butto
       ]}
       {...props}
     >
-      {children as React.ReactElement}
+      {children}
     </ButtonTag>
   );
 };

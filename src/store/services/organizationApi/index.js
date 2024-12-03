@@ -124,4 +124,20 @@ export const organizationApiEndpoints = (builder) => ({
       url: `/api/email-hub/${userId}/threads/${threadId}`,
     }),
   }),
+  getNutsSummary: builder.query({
+    providesTags: ['OrganizationNutsSummary'],
+    query: ({ isAllNuts, keywords, page, perPage, from, to, assignees, pipelineId }) => ({
+      url: `/api/organizations/nuts-summary`,
+      params: {
+        isAllNuts,
+        keywords,
+        page,
+        perPage,
+        from,
+        to,
+        assignees,
+        pipelineId,
+      },
+    }),
+  }),
 });

@@ -15,6 +15,8 @@ import EmailComposeScreen from '@/screens/PipelinesScreen/NutDetailsScreen/Email
 import EmailDetailsScreen from '@/screens/PipelinesScreen/NutDetailsScreen/EmailDetailsScreen';
 import EmailForwardScreen from '@/screens/PipelinesScreen/NutDetailsScreen/EmailForwardScreen';
 import EmailReplyScreen from '@/screens/PipelinesScreen/NutDetailsScreen/EmailReplyScreen';
+import PreviewImage from '@/screens/Preview/PreviewImage';
+import PreviewPdf from '@/screens/Preview/PreviewPdf';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 
@@ -39,6 +41,8 @@ export const MainStack = () => {
       <Stack.Screen name="NutCreateScreen" component={NutCreateScreen} />
       <Stack.Screen name="AccountProfileScreen" component={AccountProfileScreen} />
       <Stack.Screen name="EmailHubDetail" component={EmailHubDetail} />
+      <Stack.Screen name="PreviewImage" component={PreviewImage} />
+      <Stack.Screen name="PreviewPdf" component={PreviewPdf} />
     </Stack.Navigator>
   );
 };
