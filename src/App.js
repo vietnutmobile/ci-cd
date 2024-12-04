@@ -8,9 +8,15 @@ import { extendTheme, NativeBaseProvider } from 'native-base';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import BootSplash from 'react-native-bootsplash';
+import { useEffect } from 'react';
 
 function App() {
   const theme = extendTheme(nativeBaseConfig);
+
+  useEffect(() => {
+    BootSplash.hide({ fade: true });
+  }, []);
 
   return (
     <Provider store={store}>
