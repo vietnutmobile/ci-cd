@@ -10,7 +10,6 @@ import {
   SIGN_IN_ERROR_MESSAGE,
   TRY_AGAIN_ERROR_MESSAGE,
 } from '@/helpers/constants';
-import { getAppVersionFromPackageJson } from '@/helpers/content';
 import { fetchAppToken } from '@/store/features/authentication';
 import { useTheme } from '@/theme';
 import { Images } from '@/theme/ImageProvider';
@@ -19,6 +18,7 @@ import { HStack } from 'native-base';
 import { useState } from 'react';
 import { View } from 'react-native';
 import { useDispatch } from 'react-redux';
+import DeviceInfo from 'react-native-device-info';
 
 function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -47,7 +47,7 @@ function LoginScreen({ navigation }) {
     try {
       const result = await dispatch(
         fetchAppToken({
-          ...signInResult,
+          ...signInResult.data,
           provider: AUTH_PROVIDER_GOOGLE,
         }),
       );
@@ -293,7 +293,7 @@ function LoginScreen({ navigation }) {
             },
           ]}
         >
-          Version: {getAppVersionFromPackageJson()}
+          Version: {DeviceInfo.getVersion()}
         </Text>
       </View>
     </SafeScreen>

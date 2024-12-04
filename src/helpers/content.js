@@ -73,5 +73,3 @@ export const getFileIcon = (mimeType) => {
 };
 
 export const getWebAppOrigin = () => webAppOrigin;
-
-export const getAppVersionFromPackageJson = () => `${version} build ${buildNumber}`;
